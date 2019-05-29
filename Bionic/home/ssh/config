@@ -1,0 +1,72 @@
+#
+# config - DevOpsBroker configuration file for the SSH client
+#
+# Copyright (C) 2018 Edward Smith <edwardsmith@devopsbroker.org>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# -----------------------------------------------------------------------------
+# Developed on Ubuntu 16.04.4 LTS running kernel.osrelease = 4.13.0-45
+#
+# ssh obtains configuration data from the following sources in the following
+# order:
+#
+#   1. Command-line options
+#   2. User's configuration file (~/.ssh/config)
+#   3. System-wide configuration file (/etc/ssh/ssh_config)
+#
+# The way ssh interprets the Host definitions from this configuration file
+# means that:
+#   o The most specific Host configurations need to be at the top of the file
+#   o More general definitions must come later on in order to apply options
+#     that were not already defined previously
+#
+# -----------------------------------------------------------------------------
+#
+
+#
+# git@github.com
+#
+#Host github.com
+#    IdentityFile /path/to/.ssh/user-hostname-github-id_ed25519
+#    PasswordAuthentication no
+#    PubkeyAuthentication yes
+#    User git
+
+#
+# All SSH Servers
+#   o Add keys to ssh-agent
+#   o Multiplex multiple SSH sessions to the same server over a single TCP connection
+#   o No X11 forwarding
+#   o Disable GSSAPI authentication
+#   o Only use the IdentityFile defined for the Host
+#   o Log level of INFO
+#   o Prefer public key authentication
+#   o Keep alive SSH connections
+#   o Warn if remote server Host Key does not match record in ~/.ssh/known_hosts
+#   o Display an ASCII representation of the remote Host Key upon connection
+#
+Host *
+    AddKeysToAgent yes
+    ControlMaster auto
+    ControlPath ~/.ssh/multiplex/%r@%h:%p
+    ControlPersist 1
+    ForwardX11 no
+    GSSAPIAuthentication no
+    IdentitiesOnly yes
+    LogLevel INFO
+    PreferredAuthentications publickey,password
+    ServerAliveInterval 120
+    StrictHostKeyChecking ask
+    VisualHostKey yes

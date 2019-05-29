@@ -1,0 +1,54 @@
+#
+# bash_logout - DevOpsBroker Bash initialization file for $HOME/.bash_logout
+#
+# Copyright (C) 2018-2019 Edward Smith <edwardsmith@devopsbroker.org>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# -----------------------------------------------------------------------------
+# Developed on Ubuntu 16.04.4 LTS running kernel.osrelease = 4.13.0-43
+#
+# The ~/.bash_logout file is executed by bash(1) when login shell exits.
+#
+# Turns out .bash_logout only works when logging out from an interactive shell
+# (aka, tty 1 through 6).
+#
+# 20190206: Removed Firefox cache persistence functionality as it does not
+#           work properly under Gnome as it did with Unity
+# -----------------------------------------------------------------------------
+#
+
+#
+# Persist the Firefox cache on logout
+#
+
+# Gzip and copy Firefox cache from /mnt/ramdisk
+#if [ -d /cache/$USER ] && [ -L $HOME/.cache/mozilla/firefox ]; then
+#
+#	# Delete the existing Firefox cache backup
+#	/bin/rm -f /cache/$USER/$profileDir.tar.gz
+#
+#	profileDir=$(/bin/ls -A /mnt/ramdisk/$USER/mozilla/firefox/)
+#	/bin/tar czvf /cache/$USER/$profileDir.tar.gz -C /mnt/ramdisk/$USER/mozilla/firefox/ $profileDir/
+#
+#fi
+
+#
+# When leaving the console clear the screen to increase privacy
+#
+#if [ $SHLVL -eq 1 ]; then
+#	[ -x /usr/bin/clear_console ] && /usr/bin/clear_console -q
+#fi
+
+exit 0

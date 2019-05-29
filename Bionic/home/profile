@@ -1,0 +1,65 @@
+#
+# profile - DevOpsBroker Bash initialization file for $HOME/.profile
+#
+# Copyright (C) 2018-2019 Edward Smith <edwardsmith@devopsbroker.org>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# -----------------------------------------------------------------------------
+# Developed on Ubuntu 16.04.4 LTS running kernel.osrelease = 4.13.0-43
+#
+# The ~/.profile file is executed by the command interpreter for login
+# shells.
+#
+# See /usr/share/doc/bash/examples/startup-files for examples. The files are
+# located in the bash-doc package.
+# -----------------------------------------------------------------------------
+#
+
+# The default umask is set in /etc/pam.d/common-session; can be overridden here
+umask 027
+
+# Set PATH so it includes user's private bin directories
+PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+
+# Set USER_UID environment variable
+export USER_UID=$(/usr/bin/id -u $USER)
+
+# Create /mnt/ramdisk user directories
+if [ -d /mnt/ramdisk ]; then
+	if [ ! -d /mnt/ramdisk/$USER ]; then
+		# Create user directory in ramdisk
+		/bin/mkdir -pv --mode=0700 /mnt/ramdisk/$USER
+
+		# Create directory for Mozilla Firefox cache
+		/bin/mkdir -pv --mode=0700 /mnt/ramdisk/$USER/mozilla/firefox
+
+		# Migrate Mozilla Firefox cache to the ramdisk
+		if [ ! -L $HOME/.cache/mozilla/firefox ]; then
+			/bin/cp -a $HOME/.cache/mozilla/firefox/* /mnt/ramdisk/$USER/mozilla/firefox
+			/bin/rm -rf $HOME/.cache/mozilla/firefox
+			/usr/local/bin/symlink -o $USER:$USER $HOME/.cache/mozilla/firefox /mnt/ramdisk/$USER/mozilla/firefox
+		fi
+
+		# Adjust file and directory ownership to the user
+		/bin/chown -R $USER:$USER /mnt/ramdisk/$USER
+	fi
+
+	if [ ! -d /mnt/ramdisk/tmp ]; then
+		/bin/mkdir -p --mode=1777 /mnt/ramdisk/tmp
+	fi
+
+	# Set TMPDIR to /mnt/ramdisk/tmp for gcc and other programs
+	export TMPDIR=/mnt/ramdisk/tmp
+fi

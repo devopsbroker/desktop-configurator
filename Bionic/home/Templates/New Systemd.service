@@ -1,0 +1,25 @@
+#
+# Systemd user services are placed in the "~/.config/systemd/user" directory
+#
+# Verify the correctness of a systemd unit file:
+# sudo systemd-analyze verify foobar.service
+#
+# Enable a user service and start it:
+#   o systemctl --user enable foobar
+#   o systemctl --user start foobar
+#
+
+[Unit]
+Description=Systemd Service Description
+Documentation=https://www.freedesktop.org/software/systemd/man/systemd.unit.html
+
+# %t gets replaced with the XDG_RUNTIME_DIR which is a transient directory
+# created by systemd under /run that is specific to the user session
+[Service]
+Type=forking
+Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
+ExecStart=/usr/bin/ssh-agent -a $SSH_AUTH_SOCK
+
+[Install]
+WantedBy=default.target
+
