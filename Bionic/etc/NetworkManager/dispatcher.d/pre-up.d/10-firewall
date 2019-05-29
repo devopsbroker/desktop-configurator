@@ -1,0 +1,47 @@
+#!/bin/bash
+
+#
+# 10-firewall - DevOpsBroker NetworkManager script for loading the iptables/ip6tables firewall rules
+#
+# Copyright (C) 2018 Edward Smith <edwardsmith@devopsbroker.org>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# -----------------------------------------------------------------------------
+# Developed on Ubuntu 16.04.4 LTS running kernel.osrelease = 4.13.0-45
+#
+# This script performs the following tasks:
+#   o Loads the iptables rules into memory
+#   o Loads the ip6tables rules into memory
+# -----------------------------------------------------------------------------
+#
+
+################################## Variables ##################################
+
+## Options
+IFACE="$1"
+ACTION="$2"
+
+################################### Actions ###################################
+
+/usr/bin/logger -p syslog.notice -i Called /etc/NetworkManager/dispatcher.d/pre-up.d/10-firewall with interface "$IFACE" and action "$ACTION";
+
+#
+# Load iptables and ip6tables rules
+#
+
+/sbin/iptables-restore < /etc/network/iptables.rules
+/sbin/ip6tables-restore < /etc/network/ip6tables.rules
+
+exit 0
