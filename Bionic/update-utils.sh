@@ -448,6 +448,21 @@ installTemplate 'html5.tpl'
 installTemplate 'linux-conf.tpl'
 installTemplate 'makefile.tpl'
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Venture Websites ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Make /usr/local/bin/website directory
+if [ ! -d /usr/local/bin/website ]; then
+	printInfo 'Creating /usr/local/bin/website directory'
+
+	$EXEC_MKDIR --parents --mode=755 /usr/local/bin/website
+	$EXEC_CHOWN --changes root:users /usr/local/bin/website
+	echoOnExit=true
+fi
+
+$EXEC_CP -ruv --preserve=timestamps "$SCRIPT_DIR/usr/local/bin/website/band" /usr/local/bin/website
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Finished ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 if [ $echoOnExit == 'true' ]; then
 	echo
 fi
