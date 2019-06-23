@@ -1733,6 +1733,64 @@ function toggleDisplay(id) {
         <code>paddq xmm0, xmm1</code><br>
         <code>paddq xmm0, [rdi]</code>
       </dd>
+      <dt onclick="toggleDisplay('psllw')"><b>psllw</b> &boxh; shift packed words left logical</dt>
+      <dd id="psllw" style="display: none;">
+        <ul>
+          <li>Performs a SIMD left logical shift of the packed 16-bit word integers
+              in the destination operand by the number of bits in the source operand</li>
+          <li>The empty low-order bits are set to 0 as the 16-bit words are shifted left</li>
+        </ul>
+        <br>
+        <em>Syntax</em><br>
+        <code>psllw &lt;xmm&gt;, &lt;xmm&gt;</code><br>
+        <code>psllw &lt;xmm&gt;, &lt;mem128&gt;</code><br>
+        <code>psllw &lt;xmm&gt;, &lt;imm8&gt;</code><br>
+        <br>
+        <em>Examples</em><br>
+        <code>psllw xmm0, xmm1</code><br>
+        <code>psllw xmm0, [rdi]</code><br>
+        <code>psllw xmm0, 4</code>
+      </dd>
+      <dt onclick="toggleDisplay('pslld')"><b>pslld</b> &boxh; shift packed doublewords left logical</dt>
+      <dd id="pslld" style="display: none;">
+        <ul>
+          <li>Performs a SIMD left logical shift of the packed 32-bit doubleword
+              integers in the destination operand by the number of bits in the
+              source operand</li>
+          <li>The empty low-order bits are set to 0 as the 32-bit doublewords
+              are shifted left</li>
+        </ul>
+        <br>
+        <em>Syntax</em><br>
+        <code>pslld &lt;xmm&gt;, &lt;xmm&gt;</code><br>
+        <code>pslld &lt;xmm&gt;, &lt;mem128&gt;</code><br>
+        <code>pslld &lt;xmm&gt;, &lt;imm8&gt;</code><br>
+        <br>
+        <em>Examples</em><br>
+        <code>pslld xmm0, xmm1</code><br>
+        <code>pslld xmm0, [rdi]</code><br>
+        <code>pslld xmm0, 8</code>
+      </dd>
+      <dt onclick="toggleDisplay('psllq')"><b>psllq</b> &boxh; shift packed quadwords left logical</dt>
+      <dd id="psllq" style="display: none;">
+        <ul>
+          <li>Performs a SIMD left logical shift of the packed 64-bit quadword
+              integers in the destination operand by the number of bits in the
+              source operand</li>
+          <li>The empty low-order bits are set to 0 as the 64-bit quadwords are
+              shifted left</li>
+        </ul>
+        <br>
+        <em>Syntax</em><br>
+        <code>psllq &lt;xmm&gt;, &lt;xmm&gt;</code><br>
+        <code>psllq &lt;xmm&gt;, &lt;mem128&gt;</code><br>
+        <code>psllq &lt;xmm&gt;, &lt;imm8&gt;</code><br>
+        <br>
+        <em>Examples</em><br>
+        <code>psllq xmm0, xmm1</code><br>
+        <code>psllq xmm0, [rdi]</code><br>
+        <code>psllq xmm0, 16</code>
+      </dd>
     </dl>
     </p>
 
