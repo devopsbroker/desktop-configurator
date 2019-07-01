@@ -24,6 +24,9 @@
 #
 # See /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for
 # examples.
+#
+# The persistent Bash history solution was derived from this guide:
+# https://eli.thegreenplace.net/2013/06/11/keeping-persistent-history-in-bash
 # -----------------------------------------------------------------------------
 #
 
@@ -35,6 +38,23 @@ esac
 
 # The default umask is set in /etc/pam.d/common-session; can be overridden here
 umask 027
+
+# Use persistent Bash history file
+log_bash_persistent_history() {
+	[[
+		$(history 1) =~ ^\ ([0-9]+)\ +(.*)$
+	]]
+	local date_part="${BASH_REMATCH[1]}"
+	local command_part="${BASH_REMATCH[2]}"
+
+	if [ "$command_part" != "$PERSISTENT_HISTORY_LAST" ]; then
+		echo $date_part "|" "$command_part" >> ~/.persistent_history
+		export PERSISTENT_HISTORY_LAST="$command_part"
+	fi
+}
+
+export -f log_bash_persistent_history
+export PROMPT_COMMAND="log_bash_persistent_history"
 
 # If set, the pattern "**" used in a pathname expansion context will match all
 # files and zero or more directories and subdirectories
