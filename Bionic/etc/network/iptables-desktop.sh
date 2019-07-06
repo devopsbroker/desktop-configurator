@@ -73,13 +73,28 @@ fi
 
 ${FUNC_CONFIG?"[1;91mCannot load '/etc/devops/functions.conf': No such file[0m"}
 
+# Load /etc/devops/functions-net.conf if FUNC_NET_CONFIG is unset
+if [ -z "$FUNC_NET_CONFIG" ] && [ -f /etc/devops/functions-net.conf ]; then
+	source /etc/devops/functions-net.conf
+fi
+
+${FUNC_NET_CONFIG?"[1;91mCannot load '/etc/devops/functions-net.conf': No such file[0m"}
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Robustness ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+set -o errexit                 # Exit if any statement returns a non-true value
+set -o nounset                 # Exit if use an uninitialised variable
+set -o pipefail                # Exit if any statement in a pipeline returns a non-true value
+IFS=$'\n\t'                    # Default the Internal Field Separator to newline and tab
+
 ## Script information
 SCRIPT_INFO=( $($EXEC_SCRIPTINFO "$BASH_SOURCE") )
+SCRIPT_DIR="${SCRIPT_INFO[0]}"
 SCRIPT_EXEC="${SCRIPT_INFO[1]}"
 
 # Display error if not running as root
 if [ "$USER" != 'root' ]; then
-	printError "$SCRIPT_EXEC" 'Permission denied (you must be root)'
+	printError $SCRIPT_EXEC 'Permission denied (you must be root)'
 	exit 1
 fi
 
@@ -91,7 +106,7 @@ IPTABLES_SAVE=/sbin/iptables-save
 EXEC_DERIVESUBNET=/usr/local/bin/derivesubnet
 
 ## Options
-NIC="$1"
+NIC="${1:-}"
 
 ## Variables
 IPv4_ADDRESS=''
@@ -103,21 +118,10 @@ IGMP_SUBNET='224.0.0.0/3'
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ OPTION Parsing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 if [ -z "$NIC" ]; then
-	mapfile -t ethList < <($EXEC_IP -br -4 addr show | $EXEC_GREP -Eo '^enp[a-z0-9]+')
 
-	if [ ${#ethList[@]} -eq 1 ]; then
-		ethInterface=(${ethList[0]})
-	else
-		OLD_COLUMNS=$COLUMNS
-		COLUMNS=1
-		echo "${bold}${yellow}Which Ethernet interface do you want to configure?${white}"
-		select ethInterface in ${ethList[@]}; do
-			break;
-		done
-		COLUMNS=$OLD_COLUMNS
-	fi
+	# Get default NIC if not present on command-line
+	NIC="$(getDefaultNIC)"
 
-	NIC=$ethInterface
 else
 	# Display error if network interface parameter is invalid
 	if [ ! -L /sys/class/net/$NIC ]; then

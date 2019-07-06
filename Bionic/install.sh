@@ -29,23 +29,18 @@
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Preprocessing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## Script information
+#
+# Load DevOpsBroker configuration files locally
+#
+
 SCRIPT_DIR=$( /usr/bin/dirname "$BASH_SOURCE" )
 
-# Load $SCRIPT_DIR/etc/devops/ansi.conf
 source "$SCRIPT_DIR/etc/devops/ansi.conf"
-
-# Load $SCRIPT_DIR/etc/devops/exec.conf
 source "$SCRIPT_DIR/etc/devops/exec.conf"
-
-# Load $SCRIPT_DIR/etc/devops/functions.conf
 source "$SCRIPT_DIR/etc/devops/functions.conf"
-
-# Load $SCRIPT_DIR/etc/devops/functions-admin.conf
 source "$SCRIPT_DIR/etc/devops/functions-admin.conf"
-
-# Load $SCRIPT_DIR/etc/devops/functions-io.conf
 source "$SCRIPT_DIR/etc/devops/functions-io.conf"
+source "$SCRIPT_DIR/etc/devops/functions-net.conf"
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Robustness ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -227,6 +222,7 @@ installConfig 'ansi.conf' "$INSTALL_DIR/etc/devops" /etc/devops
 installConfig 'exec.conf' "$INSTALL_DIR/etc/devops" /etc/devops
 installConfig 'functions-admin.conf' "$INSTALL_DIR/etc/devops" /etc/devops
 installConfig 'functions-io.conf' "$INSTALL_DIR/etc/devops" /etc/devops
+installConfig 'functions-net.conf' "$INSTALL_DIR/etc/devops" /etc/devops
 installConfig 'functions.conf' "$INSTALL_DIR/etc/devops" /etc/devops
 
 echo

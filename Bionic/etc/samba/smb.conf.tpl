@@ -61,6 +61,13 @@ fi
 
 ${FUNC_CONFIG?"[1;91mCannot load '/etc/devops/functions.conf': No such file[0m"}
 
+# Load /etc/devops/functions-net.conf if FUNC_NET_CONFIG is unset
+if [ -z "$FUNC_NET_CONFIG" ] && [ -f /etc/devops/functions-net.conf ]; then
+	source /etc/devops/functions-net.conf
+fi
+
+${FUNC_NET_CONFIG?"[1;91mCannot load '/etc/devops/functions-net.conf': No such file[0m"}
+
 # Display error if not running as root
 if [ "$USER" != 'root' ]; then
 	printError 'smb.conf.tpl' 'Permission denied (you must be root)'
@@ -73,7 +80,12 @@ fi
 EXEC_IFCONFIG=/sbin/ifconfig
 
 ## Options
-DEFAULT_NIC=${1:-"$($EXEC_IP -4 route show default | $EXEC_AWK '{ print $5 }')"}
+DEFAULT_NIC="${1:-}"
+
+# Get default NIC if not present on command-line
+if [ -z "$DEFAULT_NIC" ]; then
+	DEFAULT_NIC="$(getDefaultNIC)"
+fi
 
 ## Variables
 NIC_SUBNET=$($EXEC_IP -4 -o addr show dev $DEFAULT_NIC | $EXEC_AWK '{ print $4 }' | $EXEC_GREP -Eo '^[0-9]+\.[0-9]+\.[0-9]+\.')

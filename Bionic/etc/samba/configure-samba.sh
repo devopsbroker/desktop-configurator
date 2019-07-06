@@ -66,6 +66,13 @@ fi
 
 ${FUNC_IO_CONFIG?"[1;91mCannot load '/etc/devops/functions-io.conf': No such file[0m"}
 
+# Load /etc/devops/functions-net.conf if FUNC_NET_CONFIG is unset
+if [ -z "$FUNC_NET_CONFIG" ] && [ -f /etc/devops/functions-net.conf ]; then
+	source /etc/devops/functions-net.conf
+fi
+
+${FUNC_NET_CONFIG?"[1;91mCannot load '/etc/devops/functions-net.conf': No such file[0m"}
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Robustness ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 set -o errexit                 # Exit if any statement returns a non-true value
@@ -90,7 +97,7 @@ smbConfTpl=$(isExecutable "$SCRIPT_DIR"/smb.conf.tpl)
 ################################## Variables ##################################
 
 ## Options
-DEFAULT_NIC=${1:-"$($EXEC_IP -4 route show default | $EXEC_AWK '{ print $5 }')"}
+DEFAULT_NIC="${1:-}"
 
 ## Variables
 export TMPDIR=${TMPDIR:-'/tmp'}
@@ -104,6 +111,11 @@ if [ $SHLVL -eq 1 ]; then
 fi
 
 printBox "DevOpsBroker $UBUNTU_RELEASE Samba Configurator" 'true'
+
+# Get default NIC if not present on command-line
+if [ -z "$DEFAULT_NIC" ]; then
+	DEFAULT_NIC="$(getDefaultNIC)"
+fi
 
 #
 # /etc/samba/ Configuration
