@@ -201,15 +201,9 @@ printBanner 'Configuring RAW Table'
 
 # Rate limit Fragment logging
 # ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-$IP6TABLES -t raw -N ipv6_fragment_drop
-$IP6TABLES -t raw -A ipv6_fragment_drop -m limit --limit 3/min --limit-burst 2 -j LOG --log-prefix '[IPv6 FRAG BLOCK] ' --log-level 7
-$IP6TABLES -t raw -A ipv6_fragment_drop -j DROP
-
-# Rate limit Canon/Epson logging
-# ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-$IP6TABLES -t raw -N ipv6_canon_drop
-$IP6TABLES -t raw -A ipv6_canon_drop -m limit --limit 3/min --limit-burst 2 -j LOG --log-prefix '[IPv6 CANON BLOCK] ' --log-level 7
-$IP6TABLES -t raw -A ipv6_canon_drop -j DROP
+$IP6TABLES -t raw -N fragment_drop
+$IP6TABLES -t raw -A fragment_drop -m limit --limit 3/min --limit-burst 2 -j LOG --log-prefix '[IPv6 FRAG BLOCK] ' --log-level 7
+$IP6TABLES -t raw -A fragment_drop -j DROP
 
 # Perform NOTRACK and ACCEPT
 # ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
@@ -222,7 +216,7 @@ $IP6TABLES -t raw -A do_not_track -j ACCEPT
 #
 
 printInfo 'DROP incoming fragmented packets'
-$IP6TABLES -t raw -A PREROUTING -m frag --fragmore -j ipv6_fragment_drop
+$IP6TABLES -t raw -A PREROUTING -m frag --fragmore -j fragment_drop
 
 printInfo 'Allow incoming Link-Local packets on all network interfaces'
 $IP6TABLES -t raw -A PREROUTING -s $IPv6_SUBNET_LOCAL -j do_not_track
@@ -230,14 +224,14 @@ $IP6TABLES -t raw -A PREROUTING -s $IPv6_SUBNET_LOCAL -j do_not_track
 # Create PREROUTING filter chains for each network interface
 # ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 
-## lo
-printInfo 'Allow incoming lo interface traffic'
-$IP6TABLES -t raw -A PREROUTING -i lo -j do_not_track
-
 ## NIC
 printInfo "Process incoming $NIC interface traffic"
 $IP6TABLES -t raw -N raw-${NIC}-pre
 $IP6TABLES -t raw -A PREROUTING -i ${NIC} -j raw-${NIC}-pre
+
+## lo
+printInfo 'Allow incoming lo interface traffic'
+$IP6TABLES -t raw -A PREROUTING -i lo -j do_not_track
 
 printInfo 'Allow all other incoming interface traffic'
 $IP6TABLES -t raw -A PREROUTING -j ACCEPT
@@ -324,16 +318,12 @@ echo
 # ****************************
 #
 
-printInfo 'Allow incoming TCP HTTP/HTTPS response packets'
-$IP6TABLES -t raw -A raw-${NIC}-tcp-pre -p tcp -m tcp --sport 443 -j do_not_track
-$IP6TABLES -t raw -A raw-${NIC}-tcp-pre -p tcp -m tcp --sport 80 -j do_not_track
+## TCP Ports
+printInfo 'Do not track incoming TCP traffic for permitted client ports'
+$IP6TABLES -t raw -A raw-${NIC}-tcp-pre -m set --match-set tcp_client_ports src -j do_not_track
 
-printInfo 'Allow incoming TCP DNS response packets'
-$IP6TABLES -t raw -A raw-${NIC}-tcp-pre -p tcp -m tcp --sport 53 -j do_not_track
-
-# TODO: I don't like this because it allows *anyone* on that global subnet access
-printInfo "Allow incoming TCP SMB request packets on $IPv6_SUBNET_GLOBAL"
-$IP6TABLES -t raw -A raw-${NIC}-tcp-pre -p tcp -m tcp --dport 445 -s $IPv6_SUBNET_GLOBAL -j do_not_track
+printInfo 'Do not track incoming TCP traffic for permitted service ports'
+$IP6TABLES -t raw -A raw-${NIC}-tcp-pre -m set --match-set tcp_service_ports dst -j do_not_track
 
 printInfo 'Further process all other incoming TCP traffic'
 $IP6TABLES -t raw -A raw-${NIC}-tcp-pre -j ACCEPT
@@ -347,7 +337,7 @@ echo
 #
 
 printInfo 'DROP incoming Canon/Epson printer discovery packets'
-$IP6TABLES -t raw -A raw-${NIC}-udp-pre -p udp -m multiport --sports 8610,8612,3289 -j ipv6_canon_drop
+$IP6TABLES -t raw -A raw-${NIC}-udp-pre -p udp -m multiport --sports 8610,8612,3289 -j DROP
 
 printInfo 'Further process all other incoming UDP traffic'
 $IP6TABLES -t raw -A raw-${NIC}-udp-pre -j do_not_track
@@ -359,7 +349,7 @@ echo
 #
 
 printInfo 'DROP outgoing fragmented packets'
-$IP6TABLES -t raw -A OUTPUT -m frag --fragmore -j ipv6_fragment_drop
+$IP6TABLES -t raw -A OUTPUT -m frag --fragmore -j fragment_drop
 
 printInfo 'Allow outgoing Link-Local packets on all network interfaces'
 $IP6TABLES -t raw -A OUTPUT -s $IPv6_SUBNET_LOCAL -j do_not_track
@@ -367,14 +357,14 @@ $IP6TABLES -t raw -A OUTPUT -s $IPv6_SUBNET_LOCAL -j do_not_track
 # Create OUTPUT filter chains for each network interface
 # ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 
-## lo
-printInfo 'Allow outgoing lo interface traffic'
-$IP6TABLES -t raw -A OUTPUT -o lo -j do_not_track
-
 ## NIC
 printInfo "Process outgoing $NIC interface traffic"
 $IP6TABLES -t raw -N raw-${NIC}-out
 $IP6TABLES -t raw -A OUTPUT -o ${NIC} -j raw-${NIC}-out
+
+## lo
+printInfo 'Allow outgoing lo interface traffic'
+$IP6TABLES -t raw -A OUTPUT -o lo -j do_not_track
 
 printInfo 'ACCEPT all other outgoing interface traffic'
 $IP6TABLES -t raw -A OUTPUT -j ACCEPT
@@ -411,16 +401,12 @@ echo
 # ****************************
 #
 
-printInfo 'Allow outgoing TCP HTTP/HTTPS request packets'
-$IP6TABLES -t raw -A raw-${NIC}-tcp-out -p tcp -m tcp --dport 443 -j do_not_track
-$IP6TABLES -t raw -A raw-${NIC}-tcp-out -p tcp -m tcp --dport 80 -j do_not_track
+## TCP Ports
+printInfo 'Do not track outgoing TCP traffic for permitted client ports'
+$IP6TABLES -t raw -A raw-${NIC}-tcp-out -m set --match-set tcp_client_ports dst -j do_not_track
 
-printInfo 'Allow outgoing TCP DNS request packets'
-$IP6TABLES -t raw -A raw-${NIC}-tcp-out -p tcp -m tcp --dport 53 -j do_not_track
-
-# TODO: I don't like this because it allows *anyone* on that global subnet access
-printInfo "Allow outgoing TCP SMB response packets on $IPv6_SUBNET_GLOBAL"
-$IP6TABLES -t raw -A raw-${NIC}-tcp-out -p tcp -m tcp --sport 445 -d $IPv6_SUBNET_GLOBAL -j do_not_track
+printInfo 'Do not track outgoing TCP traffic for permitted service ports'
+$IP6TABLES -t raw -A raw-${NIC}-tcp-out -m set --match-set tcp_service_ports src -j do_not_track
 
 printInfo 'Further process all other outgoing TCP traffic'
 $IP6TABLES -t raw -A raw-${NIC}-tcp-out -j ACCEPT
@@ -449,6 +435,9 @@ printBanner 'Configuring MANGLE Table'
 # ═════════════════════ Configure MANGLE PREROUTING Chain ═════════════════════
 #
 
+printInfo 'Allow incoming lo interface traffic'
+$IP6TABLES -t mangle -A PREROUTING -i lo -j ACCEPT
+
 printInfo 'Drop all incoming INVALID packets'
 $IP6TABLES -t mangle -A PREROUTING -m conntrack --ctstate INVALID -j DROP
 
@@ -467,6 +456,9 @@ $IP6TABLES -t mangle -P FORWARD DROP
 #
 # ═══════════════════════ Configure MANGLE OUTPUT Chain ═══════════════════════
 #
+
+printInfo 'Allow outgoing lo interface traffic'
+$IP6TABLES -t mangle -A OUTPUT -o lo -j ACCEPT
 
 printInfo 'DROP all outgoing INVALID packets'
 $IP6TABLES -t mangle -A OUTPUT -m conntrack --ctstate INVALID -j DROP
@@ -487,15 +479,15 @@ printBanner 'Configuring FILTER Table'
 
 # Rate limit ICMP REJECT logging
 # ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-$IP6TABLES -N ${NIC}_icmp_reject
-$IP6TABLES -A ${NIC}_icmp_reject -m limit --limit 3/min --limit-burst 2 -j LOG --log-prefix '[IPv6 BLOCK] ' --log-level 7
-$IP6TABLES -A ${NIC}_icmp_reject -j REJECT --reject-with icmp6-port-unreachable
+$IP6TABLES -N icmp_reject
+$IP6TABLES -A icmp_reject -m limit --limit 3/min --limit-burst 2 -j LOG --log-prefix '[IPv6 BLOCK] ' --log-level 7
+$IP6TABLES -A icmp_reject -j REJECT --reject-with icmp6-port-unreachable
 
 # Rate limit TCP REJECT logging
 # ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-$IP6TABLES -N ${NIC}_tcp_reject
-$IP6TABLES -A ${NIC}_tcp_reject -m limit --limit 3/min --limit-burst 2 -j LOG --log-prefix '[IPv6 BLOCK] ' --log-level 7
-$IP6TABLES -A ${NIC}_tcp_reject -p tcp -j REJECT --reject-with tcp-reset
+$IP6TABLES -N tcp_reject
+$IP6TABLES -A tcp_reject -m limit --limit 3/min --limit-burst 2 -j LOG --log-prefix '[IPv6 BLOCK] ' --log-level 7
+$IP6TABLES -A tcp_reject -p tcp -j REJECT --reject-with tcp-reset
 
 #
 # ═══════════════════════ Configure FILTER INPUT Chain ════════════════════════
@@ -504,14 +496,14 @@ $IP6TABLES -A ${NIC}_tcp_reject -p tcp -j REJECT --reject-with tcp-reset
 # Create INPUT filter chains for each network interface
 # ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 
-## lo
-printInfo 'ACCEPT incoming lo interface traffic'
-$IP6TABLES -A INPUT -i lo -j ACCEPT
-
 ## NIC
 printInfo "Process incoming $NIC interface traffic"
 $IP6TABLES -N filter-${NIC}-in
 $IP6TABLES -A INPUT -i ${NIC} -j filter-${NIC}-in
+
+## lo
+printInfo 'ACCEPT incoming lo interface traffic'
+$IP6TABLES -A INPUT -i lo -j ACCEPT
 
 printInfo 'ACCEPT all other incoming interface traffic'
 $IP6TABLES -A INPUT -j ACCEPT
@@ -541,7 +533,7 @@ $IP6TABLES -A filter-${NIC}-in -p icmpv6 -j ACCEPT
 
 ## ALL OTHERS
 printInfo 'REJECT all other incoming protocol traffic'
-$IP6TABLES -A filter-${NIC}-in -j ${NIC}_icmp_reject
+$IP6TABLES -A filter-${NIC}-in -j icmp_reject
 
 echo
 
@@ -572,22 +564,18 @@ echo
 # ******************************
 #
 
-printInfo 'ACCEPT incoming TCP HTTP/HTTPS response packets'
-$IP6TABLES -A filter-${NIC}-tcp-in -p tcp -m tcp --sport 443 -j ACCEPT
-$IP6TABLES -A filter-${NIC}-tcp-in -p tcp -m tcp --sport 80 -j ACCEPT
+## TCP Ports
+printInfo 'ACCEPT incoming TCP traffic for permitted client ports'
+$IP6TABLES -A filter-${NIC}-tcp-in -m set --match-set tcp_client_ports src -j ACCEPT
 
-printInfo 'ACCEPT incoming TCP DNS response packets'
-$IP6TABLES -A filter-${NIC}-tcp-in -p tcp -m tcp --sport 53 -j ACCEPT
-
-# TODO: I don't like this because it allows *anyone* on that global subnet access
-printInfo "ACCEPT incoming TCP SMB request packets on $IPv6_SUBNET_GLOBAL"
-$IP6TABLES -A filter-${NIC}-tcp-in -p tcp -m tcp --dport 445 -s $IPv6_SUBNET_GLOBAL -j ACCEPT
+printInfo 'ACCEPT incoming TCP traffic for permitted service ports'
+$IP6TABLES -A filter-${NIC}-tcp-in -m set --match-set tcp_service_ports dst -j ACCEPT
 
 printInfo 'ACCEPT Established TCP Sessions'
 $IP6TABLES -A filter-${NIC}-tcp-in -p tcp -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 printInfo 'REJECT all other incoming TCP traffic'
-$IP6TABLES -A filter-${NIC}-tcp-in -j ${NIC}_tcp_reject
+$IP6TABLES -A filter-${NIC}-tcp-in -j tcp_reject
 
 echo
 
@@ -597,30 +585,15 @@ echo
 # ******************************
 #
 
-printInfo 'ACCEPT incoming HTTPS UDP response packets'
-$IP6TABLES -A filter-${NIC}-udp-in -p udp -m udp --sport 443 -j ACCEPT
+## UDP Ports
+printInfo 'ACCEPT incoming UDP traffic for permitted client ports'
+$IP6TABLES -A filter-${NIC}-udp-in -m set --match-set udp_client_ports src -j ACCEPT
 
-printInfo 'ACCEPT incoming DNS UDP response packets'
-$IP6TABLES -A filter-${NIC}-udp-in -p udp -m udp --sport 53 -j ACCEPT
-
-printInfo 'ACCEPT incoming NTP UDP response packets'
-$IP6TABLES -A filter-${NIC}-udp-in -p udp -m udp --sport 123 -j ACCEPT
-
-printInfo 'ACCEPT incoming mDNSv6 UDP response packets'
-$IP6TABLES -A filter-${NIC}-udp-in -p udp -m udp -s $IPv6_SUBNET_GLOBAL -d $mDNSv6_ADDR --sport 5353 -j ACCEPT
+printInfo 'ACCEPT incoming UDP traffic for permitted service ports'
+$IP6TABLES -A filter-${NIC}-udp-in -m set --match-set udp_service_ports dst -j ACCEPT
 
 printInfo 'REJECT all other incoming UDP UNICAST traffic'
-$IP6TABLES -A filter-${NIC}-udp-in -j ${NIC}_icmp_reject
-
-#printInfo 'Allow incoming DHCPv6 UDP response packets'
-#$IP6TABLES -A filter-udp-in -p udp -m udp --dport 546 -j ACCEPT
-
-## UDP Multicast
-#$IP6TABLES -N filter-udp-in-multicast
-#$IP6TABLES -A filter-udp-in -p udp -m pkttype --pkt-type multicast -j filter-udp-in-multicast
-
-#printInfo "Allow incoming mDNS UDP MULTICAST packets (from $IPv6_GLOBAL_SUBNET)"
-#$IP6TABLES -A filter-udp-in-multicast -s $IPv6_GLOBAL_SUBNET -d $mDNSv6_ADDR -p udp -m udp --dport 5353 -j ACCEPT
+$IP6TABLES -A filter-${NIC}-udp-in -j icmp_reject
 
 echo
 
@@ -640,14 +613,14 @@ echo
 # Create OUTPUT filter chains for each network interface
 # ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 
-## lo
-printInfo 'ACCEPT outgoing lo interface traffic'
-$IP6TABLES -A OUTPUT -o lo -j ACCEPT
-
 ## NIC
 printInfo "Process outgoing $NIC interface traffic"
 $IP6TABLES -N filter-${NIC}-out
 $IP6TABLES -A OUTPUT -o ${NIC} -j filter-${NIC}-out
+
+## lo
+printInfo 'ACCEPT outgoing lo interface traffic'
+$IP6TABLES -A OUTPUT -o lo -j ACCEPT
 
 printInfo 'ACCEPT all other outgoing interface traffic'
 $IP6TABLES -A OUTPUT -j ACCEPT
@@ -677,7 +650,7 @@ $IP6TABLES -A filter-${NIC}-out -p icmpv6 -j ACCEPT
 
 ## ALL OTHERS
 printInfo 'REJECT all other outgoing protocol traffic'
-$IP6TABLES -A filter-${NIC}-out -j ${NIC}_icmp_reject
+$IP6TABLES -A filter-${NIC}-out -j icmp_reject
 
 echo
 
@@ -708,19 +681,15 @@ echo
 # *******************************
 #
 
-printInfo 'ACCEPT outgoing HTTP/HTTPS TCP request packets'
-$IP6TABLES -A filter-${NIC}-tcp-out -p tcp -m tcp --dport 443 -j ACCEPT
-$IP6TABLES -A filter-${NIC}-tcp-out -p tcp -m tcp --dport 80 -j ACCEPT
+## TCP Ports
+printInfo 'ACCEPT outgoing TCP traffic for permitted client ports'
+$IP6TABLES -A filter-${NIC}-tcp-out -m set --match-set tcp_client_ports dst -j ACCEPT
 
-printInfo 'ACCEPT outgoing DNS TCP request packets'
-$IP6TABLES -A filter-${NIC}-tcp-out -p tcp -m tcp --dport 53 -j ACCEPT
-
-# TODO: I don't like this because it allows *anyone* on that global subnet access
-printInfo "ACCEPT outgoing TCP SMB response packets on $IPv6_SUBNET_GLOBAL"
-$IP6TABLES -A filter-${NIC}-tcp-out -p tcp -m tcp --sport 445 -d $IPv6_SUBNET_GLOBAL -j ACCEPT
+printInfo 'ACCEPT outgoing TCP traffic for permitted service ports'
+$IP6TABLES -A filter-${NIC}-tcp-out -m set --match-set tcp_service_ports src -j ACCEPT
 
 printInfo 'REJECT all other outgoing TCP traffic'
-$IP6TABLES -A filter-${NIC}-tcp-out -j ${NIC}_tcp_reject
+$IP6TABLES -A filter-${NIC}-tcp-out -j tcp_reject
 
 echo
 
@@ -730,26 +699,15 @@ echo
 # *******************************
 #
 
-printInfo 'ACCEPT outoging HTTPS UDP request packets'
-$IP6TABLES -A filter-${NIC}-udp-out -p udp -m udp --dport 443 -j ACCEPT
+## UDP Ports
+printInfo 'ACCEPT outgoing UDP traffic for permitted client ports'
+$IP6TABLES -A filter-${NIC}-udp-out -m set --match-set udp_client_ports dst -j ACCEPT
 
-printInfo 'ACCEPT outoging DNS UDP request packets'
-$IP6TABLES -A filter-${NIC}-udp-out -p udp -m udp --dport 53 -j ACCEPT
-
-printInfo 'ACCEPT outgoing NTP UDP request packets'
-$IP6TABLES -A filter-${NIC}-udp-out -p udp -m udp --dport 123 -j ACCEPT
-
-printInfo 'ACCEPT outgoing mDNSv6 UDP request packets'
-$IP6TABLES -A filter-${NIC}-udp-out -p udp -m udp -d $mDNSv6_ADDR --dport 5353 -j ACCEPT
+printInfo 'ACCEPT outgoing UDP traffic for permitted service ports'
+$IP6TABLES -A filter-${NIC}-udp-out -m set --match-set udp_service_ports src -j ACCEPT
 
 printInfo 'REJECT all other outgoing UDP traffic'
-$IP6TABLES -A filter-${NIC}-udp-out -j ${NIC}_icmp_reject
-
-#printInfo 'Allow outgoing Google Talk Voice and Video packets'
-#$IP6TABLES -A filter-udp-out -p udp -m multiport --dports 19302,19305:19309 -j ACCEPT
-
-#printInfo 'Allow outgoing DHCPv6 UDP request packets'
-#$IP6TABLES -A filter-udp-out -p udp -m udp --sport 546 --dport 547 -j ACCEPT
+$IP6TABLES -A filter-${NIC}-udp-out -j icmp_reject
 
 echo
 

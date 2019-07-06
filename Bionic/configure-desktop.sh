@@ -228,38 +228,25 @@ fi
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Firewall ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-mapfile -t ethList < <($EXEC_IP -br -4 addr show | $EXEC_GREP -Eo '^enp[a-z0-9]+')
+set +o errexit
+mapfile -t ethList < <($EXEC_IP -br -4 addr show | $EXEC_GREP -Eo '^e[a-z0-9]+')
+set -o errexit
 
 if [ ${#ethList[@]} -eq 1 ]; then
 	DEFAULT_NIC=(${ethList[0]})
 else
-	OLD_COLUMNS=$COLUMNS
 	COLUMNS=1
 	echo "${bold}${yellow}Which Ethernet interface do you want to configure?${white}"
 	select DEFAULT_NIC in ${ethList[@]}; do
-		break;
+		for nic in ${ethList[@]}; do
+			if [ "$nic" == "$DEFAULT_NIC" ]; then
+				break;
+			fi
+		done
 	done
-	COLUMNS=$OLD_COLUMNS
 fi
 
-# Install iptables
-installPackage '/sbin/iptables' 'iptables'
-
-# Configure IPv4 firewall with iptables-desktop.sh script
-if [ ! -f /etc/network/iptables.rules ] || \
-	[ "$SCRIPT_DIR"/etc/network/iptables-desktop.sh -nt /etc/network/iptables.rules ]; then
-
-		"$SCRIPT_DIR"/etc/network/iptables-desktop.sh $DEFAULT_NIC
-		echo
-fi
-
-# Configure IPv6 firewall with ip6tables-desktop.sh script
-if [ ! -f /etc/network/ip6tables.rules ] || \
-	[ "$SCRIPT_DIR"/etc/network/ip6tables-desktop.sh -nt /etc/network/ip6tables.rules ]; then
-
-		"$SCRIPT_DIR"/etc/network/ip6tables-desktop.sh $DEFAULT_NIC
-		echo
-fi
+"$SCRIPT_DIR/etc/network/configure-firewall.sh" $DEFAULT_NIC
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~ DevOpsBroker Utilities ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

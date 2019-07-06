@@ -41,7 +41,31 @@ ACTION="$2"
 # Load iptables and ip6tables rules
 #
 
-/sbin/iptables-restore < /etc/network/iptables.rules
-/sbin/ip6tables-restore < /etc/network/ip6tables.rules
+# Restore IPSet configuration
+if [ -f /etc/network/ipset.conf ]; then
+	# Check to see if IPSet has already been loaded
+	set +o errexit
+
+	/sbin/ipset test udp_service_ports 5353
+
+	if [ $? -ne 0 ]; then
+		/usr/bin/logger -p syslog.notice -i [ipset-restore] Loading /etc/network/ipset.conf configuration;
+		/sbin/ipset restore -file /etc/network/ipset.conf
+	fi
+
+	set -o errexit
+fi
+
+# Restore IPv4 iptables firewall rules
+if [ -f /etc/network/iptables.rules ]; then
+	/usr/bin/logger -p syslog.notice -i [iptables-restore] Loading /etc/network/iptables.rules;
+	/sbin/iptables-restore < /etc/network/iptables.rules
+fi
+
+# Restore IPv6 ip6tables firewall rules
+if [ -f /etc/network/ip6tables.rules ]; then
+	/usr/bin/logger -p syslog.notice -i [ip6tables-restore] Loading /etc/network/ip6tables.rules;
+	/sbin/ip6tables-restore < /etc/network/ip6tables.rules
+fi
 
 exit 0

@@ -187,85 +187,46 @@ fi
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Shell Scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Make symlink to configure-desktop.sh
+#
+# Create symlinks for DevOpsBroker configuration and administration scripts
+#
+
 createSymlink /usr/local/sbin/configure-desktop "$INSTALL_DIR"/configure-desktop.sh
-
-# Make symlink to device-drivers.sh
 createSymlink /usr/local/sbin/device-drivers "$INSTALL_DIR"/device-drivers.sh
-
-# Make symlink to ttf-msclearfonts.sh
 createSymlink /usr/local/sbin/ttf-msclearfonts "$INSTALL_DIR"/ttf-msclearfonts.sh
-
-# Make symlink to update-utils.sh
 createSymlink /usr/local/sbin/update-utils "$INSTALL_DIR"/update-utils.sh
-
-# Make symlink to etc/configure-amdgpu.sh
 createSymlink /usr/local/sbin/configure-amdgpu "$INSTALL_DIR"/etc/configure-amdgpu.sh
-
-# Make symlink to etc/configure-fstab.sh
 createSymlink /usr/local/sbin/configure-fstab "$INSTALL_DIR"/etc/configure-fstab.sh
-
-# Make symlink to etc/configure-kernel.sh
 createSymlink /usr/local/sbin/configure-kernel "$INSTALL_DIR"/etc/configure-kernel.sh
-
-# Make symlink to etc/configure-nvidia.sh
 createSymlink /usr/local/sbin/configure-nvidia "$INSTALL_DIR"/etc/configure-nvidia.sh
-
-# Make symlink to etc/configure-system.sh
 createSymlink /usr/local/sbin/configure-system "$INSTALL_DIR"/etc/configure-system.sh
-
-# Make symlink to etc/apt/configure-apt-mirror.sh
 createSymlink /usr/local/sbin/configure-apt-mirror "$INSTALL_DIR"/etc/apt/configure-apt-mirror.sh
-
-# Make symlink to etc/default/configure-grub.sh
 createSymlink /usr/local/sbin/configure-grub "$INSTALL_DIR"/etc/default/configure-grub.sh
-
-# Make symlink to etc/network/ip6tables-desktop.sh
+createSymlink /usr/local/sbin/configure-firewall "$INSTALL_DIR"/etc/network/configure-firewall.sh
 createSymlink /usr/local/sbin/ip6tables-desktop "$INSTALL_DIR"/etc/network/ip6tables-desktop.sh
-
-# Make symlink to etc/network/iptables-desktop.sh
+createSymlink /usr/local/sbin/ipset-config "$INSTALL_DIR"/etc/network/ipset-config.sh
 createSymlink /usr/local/sbin/iptables-desktop "$INSTALL_DIR"/etc/network/iptables-desktop.sh
-
-# Make symlink to etc/NetworkManager/configure-nm.sh
 createSymlink /usr/local/sbin/configure-nm "$INSTALL_DIR"/etc/NetworkManager/configure-nm.sh
-
-# Make symlink to etc/samba/configure-samba.sh
 createSymlink /usr/local/sbin/configure-samba "$INSTALL_DIR"/etc/samba/configure-samba.sh
-
-# Make symlink to etc/security/configure-security.sh
 createSymlink /usr/local/sbin/configure-security "$INSTALL_DIR"/etc/security/configure-security.sh
-
-# Make symlink to etc/udev/configure-udev.sh
 createSymlink /usr/local/sbin/configure-udev "$INSTALL_DIR"/etc/udev/configure-udev.sh
-
-# Make symlink to etc/udev/rules.d/tune-diskio.tpl
 createSymlink /usr/local/sbin/tune-diskio "$INSTALL_DIR"/etc/udev/rules.d/tune-diskio.tpl
-
-# Make symlink to etc/unbound/configure-unbound.sh
 createSymlink /usr/local/sbin/configure-unbound "$INSTALL_DIR"/etc/unbound/configure-unbound.sh
-
-# Make symlink to home/configure-user.sh
 createSymlink /usr/local/sbin/configure-user "$INSTALL_DIR"/home/configure-user.sh
 
-# Create /etc/devops directory
+#
+# Install DevOpsBroker configuration files
+#
+
 if [ ! -d /etc/devops ]; then
 	printInfo 'Creating /etc/devops directory'
 	$EXEC_MKDIR --parents --mode=0755 /etc/devops
 fi
 
-# Install /etc/devops/ansi.conf
 installConfig 'ansi.conf' "$INSTALL_DIR/etc/devops" /etc/devops
-
-# Install /etc/devops/exec.conf
 installConfig 'exec.conf' "$INSTALL_DIR/etc/devops" /etc/devops
-
-# Install /etc/devops/functions-admin.conf
 installConfig 'functions-admin.conf' "$INSTALL_DIR/etc/devops" /etc/devops
-
-# Install /etc/devops/functions-io.conf
 installConfig 'functions-io.conf' "$INSTALL_DIR/etc/devops" /etc/devops
-
-# Install /etc/devops/functions.conf
 installConfig 'functions.conf' "$INSTALL_DIR/etc/devops" /etc/devops
 
 echo
