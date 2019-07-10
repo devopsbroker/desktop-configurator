@@ -24,7 +24,7 @@ A complete list of features and installation instructions can be found [here](Bi
 
 5. Install the **desktop-configurator** package
 
-   * `sudo apt install ./desktop-configurator_2.1.0_amd64.deb`
+   * `sudo apt install ./desktop-configurator_2.2.0_amd64.deb`
 
 
 6. Configure your desktop
