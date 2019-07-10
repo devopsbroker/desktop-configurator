@@ -29,13 +29,12 @@ include /etc/devops/globals.mk
 ################################## Variables ##################################
 
 PKG_NAME := desktop-configurator
-VERSION := 2.1.0
+VERSION := 2.2.0
 ARCH := amd64
 PKG_ARCHIVE := $(PKG_NAME)_$(VERSION)_$(ARCH)
 
 BUILD_DIR := $(TMPDIR)/$(PKG_ARCHIVE)
 APPLICATION_DIR = $(realpath $(CURDIR)/..)
-UTILITIES_DIR = $(realpath $(CURDIR)/../../../Utilities)
 RELEASE_DIR := $(CURDIR)/pkg-debian
 
 INSTALL_DIR := /opt/devopsbroker/bionic/desktop/configurator
@@ -45,8 +44,8 @@ EXEC_CP := /bin/cp --preserve=timestamps
 ################################### Targets ###################################
 
 .ONESHELL:
-.PHONY: default clean makeutils createdirs copyfiles copybase copyetc copyhome \
-	copyperf copyusr configdocs installutils applysecurity package printenv
+.PHONY: default clean createdirs copyfiles copybase copyetc copyhome copyperf \
+	copyusr configdocs installutils applysecurity package printenv
 
 default: package
 
@@ -56,13 +55,6 @@ clean:
 	/bin/rm -rf $(BUILD_DIR)
 	/bin/rm -f $(TMPDIR)/$(PKG_ARCHIVE).deb
 	/bin/rm -rf $(RELEASE_DIR)
-
-makeutils:
-	echo
-	$(call printInfo,Making C language utility binaries)
-	$(MAKE) TMPDIR=$(TMPDIR) --directory=$(UTILITIES_DIR)/C clean
-	$(MAKE) TMPDIR=$(TMPDIR) --directory=$(UTILITIES_DIR)/C library
-	$(MAKE) TMPDIR=$(TMPDIR) --directory=$(UTILITIES_DIR)/C install
 
 createdirs: clean
 	echo
@@ -125,7 +117,7 @@ copyperf: createdirs
 	$(call printInfo,Copying perf/ files to $(INSTALL_DIR)/perf)
 	$(EXEC_CP) -r $(APPLICATION_DIR)/perf $(BUILD_DIR)/$(INSTALL_DIR)
 
-copyusr: createdirs makeutils
+copyusr: createdirs
 	$(call printInfo,Copying usr/ files to $(BUILD_DIR)/usr)
 	$(EXEC_CP) -rL $(APPLICATION_DIR)/usr $(BUILD_DIR)
 

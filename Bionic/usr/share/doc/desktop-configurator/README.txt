@@ -22,7 +22,7 @@ HISTORY
 	Configurator a reality. Countless sites have been poured over to curate the
 	best possible automated solution given the baseline that the Ubuntu 18.04
 	LTS release provides. A baseline that is guaranteed to be supported by
-	Canonical until April 2021.
+	Canonical until April 2023.
 
 	The ultimate goal is for end users to enjoy their Ubuntu Desktop experience
 	with the absolute minimum amount of time necessary to configure it. It

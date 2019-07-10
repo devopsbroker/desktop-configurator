@@ -40,7 +40,7 @@ command="$1"
 oldVersion="$2"
 
 ## Variables
-currentVersion='2.1.0'
+currentVersion='2.2.0'
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ OPTION Parsing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

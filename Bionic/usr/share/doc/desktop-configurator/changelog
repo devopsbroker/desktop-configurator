@@ -1,3 +1,11 @@
+desktop-configurator (2.2.0) bionic; urgency=medium
+
+  [ Edward Smith ]
+  * Primarily a bug fix release
+  * Converted iptables/ip6tables over to use IPSet for port matching
+
+ -- Edward Smith <edwardsmith@devopsbroker.org>  Wed, 10 Jul 2019 11:35:22 -0500
+
 desktop-configurator (2.1.0) bionic; urgency=medium
 
   [ Edward Smith ]

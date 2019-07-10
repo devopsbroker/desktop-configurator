@@ -1,3 +1,8 @@
+2019-07-10: Version 2.2.0
+
+  * Primarily a bug fix release
+  * Converted iptables/ip6tables over to use IPSet for port matching
+
 2019-02-11: Version 2.1.0
 
   * Complete overhaul of iptables-desktop and ip6tables-desktop
