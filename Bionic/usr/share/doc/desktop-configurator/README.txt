@@ -78,8 +78,8 @@ ACKNOWLEDGEMENTS
 
 CONTACT INFORMATION
 
-	Project Page          : https://www.devopsbroker.org/ubuntu/bionic/desktop-configurator/
-	GitHub Project Page   : https://github.com/macvelli/DevOpsBroker
+	Project Page          : https://www.devopsbroker.org/
+	GitHub Project Page   : https://github.com/devopsbroker/desktop-configurator
 
 	Edward Smith
 	edwardsmith@devopsbroker.org

@@ -34,4 +34,4 @@ A complete list of features and installation instructions can be found [here](Bi
 
 ### Bugs / Feature Requests
 
-Please submit any bugs or feature requests to GitHub by creating a [New issue](https://github.com/macvelli/DevOpsBroker/issues)
+Please submit any bugs or feature requests to GitHub by creating a [New issue](https://github.com/devopsbroker/desktop-configurator/issues)

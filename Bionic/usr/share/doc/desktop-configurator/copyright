@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: desktop-configurator
 Upstream-Contact: Edward Smith <edwardsmith@devopsbroker.org>
-Source: https://github.com/macvelli/DevOpsBroker
+Source: https://github.com/devopsbroker/desktop-configurator
 
 Files: *
 Copyright: 2018-2019 Edward Smith
