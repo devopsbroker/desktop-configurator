@@ -307,121 +307,45 @@ createSymlink /usr/local/bin/celsius    /usr/local/bin/convert-temp
 createSymlink /usr/local/bin/fahrenheit /usr/local/bin/convert-temp
 createSymlink /usr/local/bin/kelvin     /usr/local/bin/convert-temp
 
-# Install deb-control user utility
 installUserUtility deb-control
-
-# Install decrypt user utility
 installUserUtility decrypt
-
-# Install derivesubnet user utility
 installUserUtility derivesubnet
-
-# Install encrypt user utility
 installUserUtility encrypt
-
-# Install extract user utility
 installUserUtility extract
-
-# Install favicon user utility
 installUserUtility favicon
-
-# Install firelog user utility
 installUserUtility firelog
-
-# Install geoip user utility
 installUserUtility geoip
-
-# Install git-repo user utility
 installUserUtility git-repo
-
-# Install gnome-config user utility
 installUserUtility gnome-config
-
-# Install hexToRgb user utility
 installUserUtility hexToRgb
-
-# Install hypotenuse user utility
 installUserUtility hypotenuse
-
-# Install kernel-config user utility
 installUserUtility kernel-config
-
-# Install lwp user utility
 installUserUtility lwp
-
-# Install macaddr user utility
 installUserUtility macaddr
-
-# Install md5sums user utility
 installUserUtility md5sums
-
-# Install nettuner user utility
 installUserUtility nettuner
-
-# Install printAnsi16 user utility
+installUserUtility odfgrep
 installUserUtility printAnsi16
-
-# Install printAnsi256 user utility
 installUserUtility printAnsi256
-
-# Install public-ip user utility
 installUserUtility public-ip
-
-# Install qemu-config user utility
 installUserUtility qemu-config
-
-# Install random-password user utility
 installUserUtility random-password
-
-# Install reverse-dns user utility
 installUserUtility reverse-dns
-
-# Install rgbToHex user utility
 installUserUtility rgbToHex
-
-# Install scriptinfo user utility
 installUserUtility scriptinfo
-
-# Install shades user utility
 installUserUtility shades
-
-# Install showFileFormat user utility
 installUserUtility showFileFormat
-
-# Install snippet user utility
 installUserUtility snippet
-
-# Install sshbroker user utility
 installUserUtility sshbroker
-
-# Install symlink user utility
 installUserUtility symlink
-
-# Install tints user utility
 installUserUtility tints
-
-# Install trim user utility
 installUserUtility trim
-
-# Install udev user utility
 installUserUtility udev
-
-# Install uuid user utility
 installUserUtility uuid
-
-# Install variations user utility
 installUserUtility variations
-
-# Install venture user utility
 installUserUtility venture
-
-# Install verify user utility
 installUserUtility verify
-
-# Install verifyclass user utility
 installUserUtility verifyclass
-
-# Install verifyip user utility
 installUserUtility verifyip
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Venture Templates ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
