@@ -281,6 +281,9 @@ installPackage '/usr/bin/abcde' 'abcde'
 # Install apparmor-utils
 installPackage '/usr/sbin/aa-genprof' 'apparmor-utils'
 
+# Install apt-transport-https
+installPackage '/usr/share/doc/apt-transport-https/copyright' 'apt-transport-https'
+
 # Install arp-scan
 installPackage '/usr/sbin/arp-scan' 'arp-scan'
 
@@ -292,6 +295,9 @@ installPackage '/usr/bin/audacious' 'audacious'
 
 # Install avahi-daemon
 installPackage '/usr/sbin/avahi-daemon' 'avahi-daemon'
+
+# Install ca-certificates
+installPackage '/usr/share/doc/ca-certificates/copyright' 'ca-certificates'
 
 # Install dconf-editor
 installPackage '/usr/bin/dconf-editor' 'dconf-editor'
