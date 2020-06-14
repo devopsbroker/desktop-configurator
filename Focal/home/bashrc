@@ -1,0 +1,80 @@
+#
+# bashrc - DevOpsBroker Bash initialization file for $HOME/.bashrc
+#
+# Copyright (C) 2018-2019 Edward Smith <edwardsmith@devopsbroker.org>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# -----------------------------------------------------------------------------
+# Developed on Ubuntu 16.04.4 LTS running kernel.osrelease = 4.13.0-43
+#
+# The ~/.bashrc file is executed by bash(1) for interactive non-login shells
+# (e.g. new Terminal window).
+#
+# See /usr/share/doc/bash/examples/startup-files (in the package bash-doc) for
+# examples.
+#
+# The persistent Bash history solution was derived from this guide:
+# https://eli.thegreenplace.net/2013/06/11/keeping-persistent-history-in-bash
+# -----------------------------------------------------------------------------
+#
+
+# If not running interactively, don't do anything
+case $- in
+	*i*) ;;
+	*) return;;
+esac
+
+# The default umask is set in /etc/pam.d/common-session; can be overridden here
+umask 027
+
+# Use persistent Bash history file
+log_bash_persistent_history() {
+	[[
+		$(history 1) =~ ^\ ([0-9]+)\ +(.*)$
+	]]
+	local date_part="${BASH_REMATCH[1]}"
+	local command_part="${BASH_REMATCH[2]}"
+
+	if [ "$command_part" != "$PERSISTENT_HISTORY_LAST" ]; then
+		echo $date_part "|" "$command_part" >> ~/.persistent_history
+		export PERSISTENT_HISTORY_LAST="$command_part"
+	fi
+}
+
+export -f log_bash_persistent_history
+export PROMPT_COMMAND="log_bash_persistent_history"
+
+# If set, the pattern "**" used in a pathname expansion context will match all
+# files and zero or more directories and subdirectories
+#shopt -s globstar
+
+# Make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# Colored GCC warnings and errors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# Set the EDITOR environment variable to your preferred editor of choice
+export EDITOR=vim
+
+# Alias definitions
+if [ -f ~/.bash_aliases ]; then
+	source ~/.bash_aliases
+fi
+
+# Personal definitions
+if [ -f ~/.bash_personal ]; then
+	source ~/.bash_personal
+fi

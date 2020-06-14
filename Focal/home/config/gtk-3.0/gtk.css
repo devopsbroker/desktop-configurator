@@ -1,0 +1,48 @@
+/*
+ * gtk.css - DevOpsBroker GTK 3.0 personal configuration file
+ *
+ * Copyright (C) 2018 Edward Smith <edwardsmith@devopsbroker.org>
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * ----------------------------------------------------------------------------
+ * Developed on Ubuntu 18.04.1 LTS running kernel.osrelease = 4.15.0-38
+ *
+ * NOTE: This file overrides settings found in the Ambiance theme located at
+ * /usr/share/themes/Ambiance/gtk-3.0/gtk-widgets.css
+ *
+ * Increases the scrollbar width from the default. Adjust to your liking.
+ * ----------------------------------------------------------------------------
+ */
+
+.scrollbar.vertical slider,
+scrollbar.vertical slider {
+	min-width: 12px;
+}
+
+.scrollbar.horizontal.slider,
+scrollbar.horizontal slider {
+	min-height: 12px;
+}
+
+.scrollbar.vertical.slider:hover,
+scrollbar.vertical:hover slider {
+	min-width: 16px;
+}
+
+.scrollbar.horizontal.slider:hover,
+scrollbar.horizontal:hover slider {
+	min-height: 16px;
+}
+

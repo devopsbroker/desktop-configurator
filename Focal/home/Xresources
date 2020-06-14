@@ -1,0 +1,38 @@
+!
+! Xresources - DevOpsBroker configuration file for $HOME/.Xresources
+!
+! Copyright (C) 2018 Edward Smith <edwardsmith@devopsbroker.org>
+!
+! This program is free software: you can redistribute it and/or modify it under
+! the terms of the GNU General Public License as published by the Free Software
+! Foundation, either version 3 of the License, or (at your option) any later
+! version.
+!
+! This program is distributed in the hope that it will be useful, but WITHOUT
+! ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+! FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+! details.
+!
+! You should have received a copy of the GNU General Public License along with
+! this program.  If not, see <http://www.gnu.org/licenses/>.
+!
+! -----------------------------------------------------------------------------
+! Developed on Ubuntu 16.04.5 LTS running kernel.osrelease = 4.15.0-33
+!
+! This file is necessary in order to modify the default Xft settings including
+! DPI and hintstyle. Use this as a guide and add your own X server resource
+! configurations.
+!
+! Font options:
+!   o hintstyles: hintnone, hintslight, hintmedium, hintfull
+!   o lcdfilters: lcdnone, lcddefault, lcdlight, lcdlegacy
+! -----------------------------------------------------------------------------
+!
+
+Xft.antialias: 1
+Xft.autohint: 0
+Xft.dpi: 109
+Xft.hinting: 1
+Xft.hintstyle: hintfull
+Xft.lcdfilter: lcddefault
+Xft.rgba: rgb

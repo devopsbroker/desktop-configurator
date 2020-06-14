@@ -1,0 +1,40 @@
+#
+# ssh-agent.service - DevOpsBroker systemd user service for ssh-agent
+#
+# Copyright (C) 2020 Edward Smith <edwardsmith@devopsbroker.org>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# -----------------------------------------------------------------------------
+# Developed on Ubuntu 20.04 LTS running kernel.osrelease = 5.4.0-31
+#
+# This service starts ssh-agent on user login and binds it to the user-specific
+# XDG_RUNTIME_DIR directory.
+#
+# When executing the configure-user.sh script, DevOpsBroker places this file
+# in the ~/.config/systemd/user directory and enables it as a user service.
+# -----------------------------------------------------------------------------
+#
+
+[Unit]
+Description=SSH Authentication Agent Service
+Documentation=http://manpages.ubuntu.com/manpages/focal/man1/ssh-agent.1.html
+
+[Service]
+Type=forking
+Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
+ExecStart=/usr/bin/ssh-agent -a $SSH_AUTH_SOCK
+
+[Install]
+WantedBy=default.target

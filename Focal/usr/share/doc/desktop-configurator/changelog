@@ -1,0 +1,93 @@
+desktop-configurator (3.0.0) focal; urgency=medium
+
+  [ Edward Smith ]
+  * Configure systemd-resolved DNS servers
+
+ -- Edward Smith <edwardsmith@devopsbroker.org>  TBD
+
+desktop-configurator (2.2.0) bionic; urgency=medium
+
+  [ Edward Smith ]
+  * Primarily a bug fix release
+  * Converted iptables/ip6tables over to use IPSet for port matching
+
+ -- Edward Smith <edwardsmith@devopsbroker.org>  Wed, 10 Jul 2019 11:35:22 -0500
+
+desktop-configurator (2.1.0) bionic; urgency=medium
+
+  [ Edward Smith ]
+  * Complete overhaul of iptables-desktop and ip6tables-desktop
+  * Complete revamp of network interface tuner
+  * Complete revamp of sysctl.conf network tuning
+  * Fixed security issues
+  * Example APT preferences and APT sources list files for backporting packages
+    from Ubuntu 19.04 Disco into Ubuntu 18.04 Bionic
+  * Expanded libdevopsbroker functionality
+  * Added new venture templates
+    - NASM assembly source file
+	- Bash completion function
+  * Added new user utilities
+    - convert-temp
+  * Numerous bug fixes and enhancements
+
+ -- Edward Smith <edwardsmith@devopsbroker.org>  Mon, 11 Feb 2019 04:03:59 -0600
+
+desktop-configurator (2.0.0) bionic; urgency=low
+
+  [ Edward Smith ]
+  * Initial release for Ubuntu 18.04 Desktop
+
+ -- Edward Smith <edwardsmith@devopsbroker.org>  Fri, 26 Oct 2018 03:10:38 -0500
+
+desktop-configurator (1.1.1) xenial; urgency=medium
+
+  [ Edward Smith ]
+  * Multiple bug fixes
+  * Added sample xorg.conf for AMD dual monitor setup
+
+ -- Edward Smith <edwardsmith@devopsbroker.org>  Fri, 26 Oct 2018 00:32:07 -0500
+
+desktop-configurator (1.1.0) xenial; urgency=medium
+
+  [ Edward Smith ]
+  * Complete solution for setting up a Samba server
+    - smbshare utility for creating Samba shares
+    - firewall service smbd for managing Samba firewall rules
+  * Added logbroker administrative utility
+  * Added movedir administrative utility
+  * Added sample xorg.conf for NVIDIA dual monitor setup
+  * Revamped the pms administrative utility providing better help and cleaner functionality
+  * Replaced vim-tiny with vim
+    - Added /etc/vim/vimrc.local global configuration file for vim editor
+  * Created libdevopsbroker.a library and refactored existing C binary executables
+  * Added C struct template and C enum template to venture
+  * Added schedtuner and verifyclass C binary utilities
+  * Added sample xorg.conf file for AMD video cards
+    - Includes additional configuration files for AMD video cards
+  * Made numerous bug fixes and code cleanup
+
+ -- Edward Smith <edwardsmith@devopsbroker.org>  Sun, 14 Oct 2018 21:19:58 -0500
+
+desktop-configurator (1.0.0) xenial; urgency=low
+
+  * Initial release
+
+  [ Edward Smith ]
+  * Configures IPv4 firewall and IPv6 firewall using iptables and ip6tables
+  * Installs all DevOpsBroker system administration and user utilities
+  * Installs a number of useful applications, libraries and utilities
+  * Installs any available proprietary drivers
+  * Configures and optimizes the filesystem
+  * Performs Linux kernel tuning optimizations
+  * Performs general system configuration
+  * Configures the fastest APT sources mirror
+  * Configures and optimizes GRUB
+  * Manages DevOpsBroker configuration files (e.g. ansi.conf)
+  * Tunes the default network interface card
+  * Performs Samba configuration and optimization
+  * Configures systemwide security configuration
+  * Configures the Disk I/O schedulers and tunes each disk independently
+  * Replaces dnsmasq with unbound for the local DNS cache server
+  * Performs user configuration
+
+ -- Edward Smith <edwardsmith@devopsbroker.org>  Thu, 20 Sep 2018 12:36:56 -0500

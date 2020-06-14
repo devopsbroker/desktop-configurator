@@ -1,0 +1,62 @@
+#
+# 60-io-schedulers.rules - DevOpsBroker configuration for disk I/O schedulers
+#
+# Copyright (C) 2018-2020 Edward Smith <edwardsmith@devopsbroker.org>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# -----------------------------------------------------------------------------
+# Developed on Ubuntu 16.04.4 LTS running kernel.osrelease = 4.13.0-43
+#
+# This time around, there are just three disk I/O schedulers available. BFQ,
+# kyber, and mq-deadline. I am going to standardize on mq-deadline and tune
+# its parameters accordingly for NVMe, SSD, and HDD drives.
+#   o NVMe and CD-ROM drives have no scheduler
+#   o SATA SSD drives use mq-deadline with generally tuned parameters
+#   o SATA HDD drives use mq-deadline with generally tuned parameters
+#   o eMMC drives use mq-deadline with generally tuned parameters
+# -----------------------------------------------------------------------------
+#
+
+# Default Disk I/O settings
+ACTION!="add|change", GOTO="io-schedulers-end"
+SUBSYSTEM!="block", GOTO="io-schedulers-end"
+
+# Use no scheduler for SATA CD-ROM/DVD-ROM drives and NVMe PCIe drives
+KERNEL=="sr[0-9]|nvme[0-9]*", SUBSYSTEM=="block", ATTR{queue/scheduler}="none"
+
+# Use mq-deadline I/O scheduler for SATA SSD drives
+KERNEL=="sd[a-z]", SUBSYSTEM=="block", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
+KERNEL=="sd[a-z]", SUBSYSTEM=="block", ATTR{queue/rotational}=="0", ATTR{queue/read_ahead_kb}="8"
+KERNEL=="sd[a-z]", SUBSYSTEM=="block", ATTR{queue/rotational}=="0", ATTR{queue/iosched/fifo_batch}="128"
+KERNEL=="sd[a-z]", SUBSYSTEM=="block", ATTR{queue/rotational}=="0", ATTR{queue/iosched/read_expire}="128"
+KERNEL=="sd[a-z]", SUBSYSTEM=="block", ATTR{queue/rotational}=="0", ATTR{queue/iosched/write_expire}="512"
+
+# Use mq-deadline I/O scheduler for SATA HDD drives
+KERNEL=="sd[a-z]", SUBSYSTEM=="block", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="mq-deadline"
+KERNEL=="sd[a-z]", SUBSYSTEM=="block", ATTR{queue/rotational}=="1", ATTR{queue/nr_requests}="32"
+KERNEL=="sd[a-z]", SUBSYSTEM=="block", ATTR{queue/rotational}=="1", ATTR{queue/read_ahead_kb}="8"
+KERNEL=="sd[a-z]", SUBSYSTEM=="block", ATTR{queue/rotational}=="1", ATTR{queue/iosched/fifo_batch}="64"
+KERNEL=="sd[a-z]", SUBSYSTEM=="block", ATTR{queue/rotational}=="1", ATTR{queue/iosched/read_expire}="320"
+KERNEL=="sd[a-z]", SUBSYSTEM=="block", ATTR{queue/rotational}=="1", ATTR{queue/iosched/write_expire}="1280"
+
+# Use mq-deadline I/O scheduler for eMMC drives
+KERNEL=="mmcblk[0-9]*", SUBSYSTEM=="block", ATTR{queue/scheduler}="mq-deadline"
+KERNEL=="mmcblk[0-9]*", SUBSYSTEM=="block", ATTR{queue/nr_requests}="32"
+KERNEL=="mmcblk[0-9]*", SUBSYSTEM=="block", ATTR{queue/read_ahead_kb}="8"
+KERNEL=="mmcblk[0-9]*", SUBSYSTEM=="block", ATTR{queue/iosched/fifo_batch}="64"
+KERNEL=="mmcblk[0-9]*", SUBSYSTEM=="block", ATTR{queue/iosched/read_expire}="320"
+KERNEL=="mmcblk[0-9]*", SUBSYSTEM=="block", ATTR{queue/iosched/write_expire}="1280"
+
+LABEL="io-schedulers-end"

@@ -1,0 +1,92 @@
+#!/bin/bash
+
+#
+# bash.sh - Description goes here
+#
+# Copyright (C) 2020 AUTHOR_NAME <email@address.com>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# -----------------------------------------------------------------------------
+# Developed on Ubuntu 20.04 LTS running kernel.osrelease = 5.4.0-37
+#
+# -----------------------------------------------------------------------------
+#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Robustness ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+set -o errexit                 # Exit if any statement returns a non-true value
+set -o nounset                 # Exit if use an uninitialised variable
+set -o pipefail                # Exit if any statement in a pipeline returns a non-true value
+
+################################## Variables ##################################
+
+## Bash exec variables
+EXEC_NETTUNER=/usr/local/bin/nettuner
+EXEC_NMCLI=/usr/bin/nmcli
+EXEC_SPEED_TEST=/usr/bin/speedtest-cli
+
+## Options
+IFACE="$1"
+ACTION="$2"
+
+## Variables
+MAC_ADDR=""
+MD5SUM=""
+TUNER_FILE=""
+
+################################### Actions ###################################
+
+if [ "$ACTION" == "up" ]; then
+	MAC_ADDR="$(/usr/sbin/arp -n -a $IP4_GATEWAY | /usr/bin/awk '{print $4}')"
+	MD5SUM="$(echo \"$MAC_ADDR\" | /usr/bin/md5sum)"
+	TUNER_FILE="tune-${MD5SUM:0:8}"
+
+	echo "Interface Name: $IFACE" >> /tmp/file.txt
+	echo "Action:         $ACTION" >> /tmp/file.txt
+	echo "Connection ID:  $CONNECTION_ID" >> /tmp/file.txt
+	echo "IPv4 Gateway:   $IP4_GATEWAY" >> /tmp/file.txt
+	echo "MAC Address:    $MAC_ADDR" >> /tmp/file.txt
+	echo "MD5 Hash:       $MD5SUM" >> /tmp/file.txt
+
+	# Create a subdirectory for the network interface name
+	if [ ! -d /etc/NetworkManager/dispatcher.d/$IFACE ]; then
+		/usr/bin/mkdir --mode=0755 /etc/NetworkManager/dispatcher.d/$IFACE
+		/usr/bin/chown root:root /etc/NetworkManager/dispatcher.d/$IFACE
+		/usr/bin/chmod 0755 /etc/NetworkManager/dispatcher.d/$IFACE
+	fi
+
+	# Create tuning script for the given network
+	if [ ! -f /etc/NetworkManager/dispatcher.d/$1/$TUNER_FILE ]; then
+		/usr/bin/touch /etc/NetworkManager/dispatcher.d/$1/$TUNER_FILE
+		/usr/bin/chown root:root /etc/NetworkManager/dispatcher.d/$1/$TUNER_FILE
+		/usr/bin/chmod 0744 /etc/NetworkManager/dispatcher.d/$1/$TUNER_FILE
+
+# ---------------------------- Network Information ----------------------------
+
+		$EXEC_SPEED_TEST | /usr/bin/tee /tmp/speedtest.info
+
+		# Internet Download speed
+		INET_DL_SPEED=$($EXEC_AWK '/Download:/{ print $2 }' /tmp/speedtest.info)
+
+		# Internet Upload speed
+		INET_UL_SPEED=$($EXEC_AWK '/Upload:/{ print $2 }' /tmp/speedtest.info)
+
+
+
+
+
+
+	fi
+fi

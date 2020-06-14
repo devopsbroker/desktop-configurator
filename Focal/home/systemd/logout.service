@@ -1,0 +1,49 @@
+#
+# logout.service - DevOpsBroker systemd user service for simply calling freaking ~/.bash_logout
+#
+# Copyright (C) 2018-2019 Edward Smith <edwardsmith@devopsbroker.org>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# -----------------------------------------------------------------------------
+# Developed on Ubuntu 18.04.1 LTS running kernel.osrelease = 4.15.0-42
+#
+# This service exists because Gnome does not call ~/.bash_logout on shutdown
+# or restart.
+#
+# When executing the configure-user.sh script, DevOpsBroker places this file
+# in the ~/.config/systemd/user directory and enables it as a user service.
+#
+# 20190206: Removed Firefox cache persistence functionality as it does not
+#           work properly under Gnome as it did with Unity
+# -----------------------------------------------------------------------------
+#
+
+[Unit]
+Description=Bash Logout Service
+DefaultDependencies=no
+PartOf=graphical-session.target
+Conflicts=shutdown.target
+Before=shutdown.target
+
+# %s - the shell of the user running the service manager instance
+# %h - the home directory of the user running the service manager instance
+[Service]
+Type=oneshot
+ExecStart=/bin/true
+ExecStop=%s %h/.bash_logout
+RemainAfterExit=yes
+
+[Install]
+WantedBy=graphical-session.target shutdown.target

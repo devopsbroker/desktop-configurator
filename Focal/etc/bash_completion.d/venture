@@ -1,0 +1,61 @@
+#!/bin/bash
+
+#
+# venture - DevOpsBroker Bash completion script for the venture utility
+#
+# Copyright (C) 2019 Edward Smith <edwardsmith@devopsbroker.org>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# -----------------------------------------------------------------------------
+# Developed on Ubuntu 18.04.1 LTS running kernel.osrelease = 4.15.0-45
+#
+# -----------------------------------------------------------------------------
+#
+
+function _venture() {
+
+	# Exit if we have already completed the venture option
+	if [ $COMP_CWORD -eq 2 ]; then
+		return
+	fi
+
+	local programName=${COMP_WORDS[0]}
+	local currentWord=${COMP_WORDS[COMP_CWORD]}
+
+	COMPREPLY=()
+
+	if [ "$programName" == 'venture' ]; then
+		if [ -z "$currentWord" ]; then
+			COMPREPLY+=('bashcomplete' 'create' 'enum' 'fileinfo' 'new' 'struct' 'timestamp')
+		elif [[ "bashcomplete" == "$currentWord"* ]]; then
+			COMPREPLY+=('bashcomplete')
+		elif [[ "create" == "$currentWord"* ]]; then
+			COMPREPLY+=('create')
+		elif [[ "enum" == "$currentWord"* ]]; then
+			COMPREPLY+=('enum')
+		elif [[ "fileinfo" == "$currentWord"* ]]; then
+			COMPREPLY+=('fileinfo')
+		elif [[ "new" == "$currentWord"* ]]; then
+			COMPREPLY+=('new')
+		elif [[ "struct" == "$currentWord"* ]]; then
+			COMPREPLY+=('struct')
+		elif [[ "timestamp" == "$currentWord"* ]]; then
+			COMPREPLY+=('timestamp')
+		fi
+	fi
+
+}
+
+complete -F _venture venture
