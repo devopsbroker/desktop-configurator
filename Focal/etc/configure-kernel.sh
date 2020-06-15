@@ -100,45 +100,14 @@ fi
 # Ensure the sysctl.conf.tpl script is executable
 sysctlConf=$(isExecutable "$SCRIPT_DIR"/sysctl.conf.tpl)
 
-################################## Functions ##################################
-
-# ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-# Function:     execSpeedTest
-# Description:  Executes the Internet Speed Test
-# -----------------------------------------------------------------------------
-function execSpeedTest() {
-	# Install speedtest-cli if necessary
-	if [ ! -f $EXEC_SPEED_TEST ]; then
-		printBanner 'Installing speedtest-cli'
-		$EXEC_APT -y install speedtest-cli
-		echo
-	fi
-
-	if [ ! -f /etc/devops/speedtest.info ]; then
-		printInfo 'Executing Internet speed test'
-		$EXEC_SPEED_TEST | tee /etc/devops/speedtest.info
-
-		printInfo 'Internet speed test finished'
-		echo
-	fi
-}
-
 ################################## Variables ##################################
 
 ## Bash exec variables
-EXEC_SPEED_TEST=/usr/bin/speedtest-cli
-EXEC_SYSCTL=/sbin/sysctl
+EXEC_SYSCTL=/usr/sbin/sysctl
 
 ## Variables
 export TMPDIR=${TMPDIR:-'/tmp'}
 echoOnExit=false
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ OPTION Parsing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Delete /etc/devops/speedtest.info on force kernel retune
-if [ "${1:-}" == '-f' ]; then
-	$EXEC_RM -f /etc/devops/speedtest.info 2>/dev/null
-fi
 
 ################################### Actions ###################################
 
@@ -155,9 +124,6 @@ printBox "DevOpsBroker $UBUNTU_RELEASE Kernel Tuning Configurator" 'true'
 if ! $EXEC_GREP -Fq 'DevOpsBroker' /etc/sysctl.conf; then
 
 	printBanner 'Installing /etc/sysctl.conf'
-
-	# Execute Internet speed test
-	execSpeedTest
 
 	# Execute template script
 	"$sysctlConf" > "$TMPDIR"/sysctl.conf
@@ -179,9 +145,6 @@ if ! $EXEC_GREP -Fq 'DevOpsBroker' /etc/sysctl.conf; then
 elif [ "$sysctlConf" -nt /etc/sysctl.conf ] || [ "${1:-}" == '-f' ]; then
 
 	printBanner 'Updating /etc/sysctl.conf'
-
-	# Execute Internet speed test
-	execSpeedTest
 
 	# Execute template script
 	"$sysctlConf" > "$TMPDIR"/sysctl.conf

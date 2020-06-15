@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #
-# bash.sh - Description goes here
+# bash.sh - DevOpsBroker script for tuning network devices
 #
-# Copyright (C) 2020 AUTHOR_NAME <email@address.com>
+# Copyright (C) 2020 Edward Smith <edwardsmith@devopsbroker.org>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -53,13 +53,6 @@ if [ "$ACTION" == "up" ]; then
 	MD5SUM="$(echo \"$MAC_ADDR\" | /usr/bin/md5sum)"
 	TUNER_FILE="tune-${MD5SUM:0:8}"
 
-	echo "Interface Name: $IFACE" >> /tmp/file.txt
-	echo "Action:         $ACTION" >> /tmp/file.txt
-	echo "Connection ID:  $CONNECTION_ID" >> /tmp/file.txt
-	echo "IPv4 Gateway:   $IP4_GATEWAY" >> /tmp/file.txt
-	echo "MAC Address:    $MAC_ADDR" >> /tmp/file.txt
-	echo "MD5 Hash:       $MD5SUM" >> /tmp/file.txt
-
 	# Create a subdirectory for the network interface name
 	if [ ! -d /etc/NetworkManager/dispatcher.d/$IFACE ]; then
 		/usr/bin/mkdir --mode=0755 /etc/NetworkManager/dispatcher.d/$IFACE
@@ -68,25 +61,20 @@ if [ "$ACTION" == "up" ]; then
 	fi
 
 	# Create tuning script for the given network
-	if [ ! -f /etc/NetworkManager/dispatcher.d/$1/$TUNER_FILE ]; then
-		/usr/bin/touch /etc/NetworkManager/dispatcher.d/$1/$TUNER_FILE
-		/usr/bin/chown root:root /etc/NetworkManager/dispatcher.d/$1/$TUNER_FILE
-		/usr/bin/chmod 0744 /etc/NetworkManager/dispatcher.d/$1/$TUNER_FILE
+	if [ ! -f /etc/NetworkManager/dispatcher.d/$IFACE/$TUNER_FILE ]; then
 
-# ---------------------------- Network Information ----------------------------
+		# ------------------------ Network Information ------------------------
 
+		# Gather Internet Download and Upload speeds
 		$EXEC_SPEED_TEST | /usr/bin/tee /tmp/speedtest.info
+		INET_DL_SPEED=$(/usr/bin/awk '/Download:/{ print $2 }' /tmp/speedtest.info)
+		INET_UL_SPEED=$(/usr/bin/awk '/Upload:/{ print $2 }' /tmp/speedtest.info)
 
-		# Internet Download speed
-		INET_DL_SPEED=$($EXEC_AWK '/Download:/{ print $2 }' /tmp/speedtest.info)
+		# Create network tuning script
+		$EXEC_NETTUNER -d $INET_DL_SPEED -u $INET_UL_SPEED $IFACE > /etc/NetworkManager/dispatcher.d/$IFACE/$TUNER_FILE
+		/usr/bin/chown root:root /etc/NetworkManager/dispatcher.d/$IFACE/$TUNER_FILE
+		/usr/bin/chmod 0744 /etc/NetworkManager/dispatcher.d/$IFACE/$TUNER_FILE
 
-		# Internet Upload speed
-		INET_UL_SPEED=$($EXEC_AWK '/Upload:/{ print $2 }' /tmp/speedtest.info)
-
-
-
-
-
-
+		/usr/bin/rm /tmp/speedtest.info
 	fi
 fi

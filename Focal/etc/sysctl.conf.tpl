@@ -101,6 +101,12 @@ export TMPDIR=${TMPDIR:-'/tmp'}
 YEAR=$($EXEC_DATE +'%Y')
 IS_VM_GUEST=0
 SCHED_TUNING=''
+SOMAXCONN=0
+TCP_FRTO=0
+TCP_MAX_ORPHANS=0
+TCP_MAX_TW_BUCKETS=0
+
+declare -a nicList=()
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ OPTION Parsing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -173,11 +179,19 @@ FS_FILE_MAX=$[ $RAM_TOTAL / 10 ]
 
 # ---------------------------- Network Information ----------------------------
 
-# Internet Download speed
-INET_DL_SPEED=$($EXEC_AWK '/Download:/{ print $2 }' /etc/devops/speedtest.info)
+SOMAXCONN=$[ $RAM_GB * 128 ]
+TCP_MAX_ORPHANS=$[ $RAM_GB * 64 ]
+TCP_MAX_TW_BUCKETS=$[ $RAM_GB * 16384 ]
 
-# Internet Upload speed
-INET_UL_SPEED=$($EXEC_AWK '/Upload:/{ print $2 }' /etc/devops/speedtest.info)
+nicList=$(/usr/sbin/ip -br link show | /usr/bin/awk '{print $1}')
+
+# Check if we have a Wi-Fi network device
+for nicDevice in "${nicList[@]}"; do
+	if [[ $nicDevice == w* ]]; then
+		TCP_FRTO=2
+		break;
+	fi
+done
 
 # ------------------------- Virtual Memory Information ------------------------
 
@@ -284,7 +298,140 @@ fs.file-max = $FS_FILE_MAX
 # Network Kernel Tuning Configuration
 # ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 
-$($EXEC_NETTUNER -d $INET_DL_SPEED -u $INET_UL_SPEED $NIC)
+# Set Default Queuing Discipline to Fair/Flow Queueing + Codel
+net.core.default_qdisc = fq_codel
+
+# Optimize Maximum Amount of Option Memory Buffers
+net.core.optmem_max = 32768
+
+# Optimize Connection Backlog
+net.core.somaxconn = $SOMAXCONN
+
+# Do not accept source routed packets
+net.ipv4.conf.all.accept_source_route = 0
+net.ipv6.conf.all.accept_source_route = 0
+net.ipv4.conf.default.accept_source_route = 0
+net.ipv6.conf.default.accept_source_route = 0
+
+# Do not accept ICMP REDIRECT Messages
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv6.conf.all.accept_redirects = 0
+net.ipv4.conf.default.accept_redirects = 0
+net.ipv6.conf.default.accept_redirects = 0
+
+# Disable logging packets with impossible addresses
+net.ipv4.conf.all.log_martians = 0
+net.ipv4.conf.default.log_martians = 0
+
+# Enable Source Address Verification
+net.ipv4.conf.all.rp_filter = 1
+net.ipv4.conf.default.rp_filter = 1
+
+# Do not send ICMP REDIRECT Messages
+net.ipv4.conf.all.send_redirects = 0
+net.ipv4.conf.default.send_redirects = 0
+
+# Allow ICMP ECHO Requests (Ping)
+net.ipv4.icmp_echo_ignore_all = 0
+
+# Drop BROADCAST/MULTICAST ICMP ECHO Requests
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+
+# Ignore bogus ICMP error responses
+net.ipv4.icmp_ignore_bogus_error_responses = 1
+
+# Limit the number of ICMP packets sent per second
+net.ipv4.icmp_msgs_per_sec = 100
+
+# Disable IP Forwarding
+net.ipv4.ip_forward = 0
+net.ipv4.conf.all.forwarding = 0
+net.ipv6.conf.all.forwarding = 0
+net.ipv4.conf.default.forwarding = 0
+net.ipv6.conf.default.forwarding = 0
+
+# Enable Path MTU Discovery if using Jumbo Frames
+net.ipv4.ip_no_pmtu_disc = 1
+
+# Increase the total port range for both TCP and UDP connections
+net.ipv4.ip_local_port_range = 1500 65001
+
+# Divide socket receive buffer space evenly between TCP window and application
+net.ipv4.tcp_adv_win_scale = 1
+
+# Use TCP-BBR Congestion Control Algorithm
+net.ipv4.tcp_congestion_control = bbr
+
+# Enable TCP Explicit Congestion Notification (ECN)
+net.ipv4.tcp_ecn = 1
+
+# Enable TCP Fast Open (TFO)
+net.ipv4.tcp_fastopen = 3
+
+# Optimize TCP FIN Timeout
+net.ipv4.tcp_fin_timeout = 20
+
+# Set F-RTO enhanced recovery algorithm based on wireless network presence
+net.ipv4.tcp_frto = $TCP_FRTO
+net.ipv4.tcp_frto_response=0
+
+# Optimize TCP Keepalive (Detect dead connections after 120s)
+net.ipv4.tcp_keepalive_time = 60
+net.ipv4.tcp_keepalive_intvl = 10
+net.ipv4.tcp_keepalive_probes = 6
+
+# Enable TCP Low Latency
+net.ipv4.tcp_low_latency = 1
+
+# Optimize TCP Max Orphans and TCP Max TIME_WAIT Buckets
+net.ipv4.tcp_max_orphans = $TCP_MAX_ORPHANS
+net.ipv4.tcp_max_tw_buckets = $TCP_MAX_TW_BUCKETS
+
+# Disable TCP Receive Buffer Auto-Tuning
+net.ipv4.tcp_moderate_rcvbuf = 0
+
+# Controls TCP Packetization-Layer Path MTU Discovery
+net.ipv4.tcp_mtu_probing = 1
+
+# Disable TCP Metrics Cache
+net.ipv4.tcp_no_metrics_save = 1
+
+# How may times to retry before killing TCP connection, closed by our side
+net.ipv4.tcp_orphan_retries = 1
+
+# Enable TCP Time-Wait Attack Protection
+net.ipv4.tcp_rfc1337 = 1
+
+# Enable TCP Select Acknowledgments
+net.ipv4.tcp_sack = 1
+net.ipv4.tcp_dsack = 1
+net.ipv4.tcp_fack = 1
+
+# Disable TCP Slow Start After Idle
+net.ipv4.tcp_slow_start_after_idle = 0
+
+# Enable SYN Flood Attack Protection
+net.ipv4.tcp_max_syn_backlog = 1024
+net.ipv4.tcp_synack_retries = 2
+net.ipv4.tcp_syncookies = 1
+
+# Optimize TCP SYN Retries
+net.ipv4.tcp_syn_retries = 2
+
+# Disable IPv4 TCP Timestamps
+net.ipv4.tcp_timestamps = 0
+
+# Enable TCP TIME_WAIT Socket Reuse
+net.ipv4.tcp_tw_reuse = 1
+
+# Enable TCP Window Scaling
+net.ipv4.tcp_window_scaling = 1
+
+# Set the IPv4 Route Minimum PMTU
+net.ipv4.route.min_pmtu = 552
+
+# Set the IPv4 Minimum Advertised MSS
+net.ipv4.route.min_adv_mss = 512
 
 #
 # Virtual Memory Kernel Tuning Configuration
