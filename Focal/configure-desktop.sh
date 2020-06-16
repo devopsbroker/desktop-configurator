@@ -333,6 +333,9 @@ installPackage '/usr/bin/htop' 'htop'
 # Install hwinfo
 installPackage '/usr/sbin/hwinfo' 'hwinfo'
 
+# Install imagemagick
+installPackage '/usr/bin/convert' 'imagemagick'
+
 # Install inkscape
 installPackage '/usr/bin/inkscape' 'inkscape'
 
@@ -422,8 +425,9 @@ installPackage '/usr/bin/pulseeffects' 'pulseeffects pulseaudio --install-recomm
 # Install pv
 installPackage '/usr/bin/pv' 'pv'
 
-# Install qemu-kvm
+# Install qemu-kvm and qemu-utils
 installPackage '/usr/bin/kvm' 'qemu-kvm'
+installPackage '/usr/bin/qemu-img' 'qemu-utils'
 
 # Install rng-tools
 installPackage '/usr/sbin/rngd' 'rng-tools'
