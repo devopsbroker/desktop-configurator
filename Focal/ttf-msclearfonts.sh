@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # ttf-msclearfonts.sh - DevOpsBroker script for installing Microsoft ClearType fonts

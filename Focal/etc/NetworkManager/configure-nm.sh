@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # configure-nm.sh - DevOpsBroker script for configuring NetworkManager

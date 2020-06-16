@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # fstab.tpl - DevOpsBroker template for generating /etc/fstab configuration

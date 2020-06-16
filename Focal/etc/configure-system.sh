@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # configure-system.sh - DevOpsBroker script for systemwide configurations

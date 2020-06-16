@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # configure-udev.sh - DevOpsBroker script for configuring udev rules

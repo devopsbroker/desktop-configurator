@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # update-utils.sh - DevOpsBroker script for installing and updating utility scripts and executables

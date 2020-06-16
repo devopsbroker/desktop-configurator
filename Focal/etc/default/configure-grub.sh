@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # configure-grub.sh - DevOpsBroker script for configuring GRUB boot loader

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # configure-apt-mirror.sh - DevOpsBroker script for configuring apt mirror site

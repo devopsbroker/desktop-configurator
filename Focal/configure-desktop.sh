@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # configure-desktop.sh - DevOpsBroker configuration script for Ubuntu 20.04 Desktop

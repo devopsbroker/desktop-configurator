@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # iptables-desktop.sh - DevOpsBroker IPv4 iptables firewall script

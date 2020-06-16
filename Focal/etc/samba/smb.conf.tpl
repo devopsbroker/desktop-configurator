@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # smb.conf.tpl - DevOpsBroker script for generating /etc/samba/smb.conf configuration

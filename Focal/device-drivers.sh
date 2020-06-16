@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # device-drivers.sh - DevOpsBroker script for installing proprietary drivers

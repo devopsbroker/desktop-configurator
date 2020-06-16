@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # configure-cache.sh - DevOpsBroker script for configuring the /cache directory

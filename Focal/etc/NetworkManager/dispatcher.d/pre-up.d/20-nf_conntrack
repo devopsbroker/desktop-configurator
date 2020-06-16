@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # 20-nf_conntrack - DevOpsBroker NetworkManager script for configuring the nf_conntrack module

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # configure-nvidia.sh - DevOpsBroker script for configuring the NVIDIA graphics driver

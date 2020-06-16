@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # ip6tables-desktop.sh - DevOpsBroker IPv6 ip6tables firewall script

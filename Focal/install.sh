@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # install.sh - DevOpsBroker Ubuntu 18.04 Desktop Configurator install script

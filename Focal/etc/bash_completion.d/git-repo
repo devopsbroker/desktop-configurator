@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # git-repo - DevOpsBroker Bash completion script for the git-repo utility

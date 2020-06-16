@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # configure-amdgpu.sh - DevOpsBroker script for configuring the amdgpu graphics driver

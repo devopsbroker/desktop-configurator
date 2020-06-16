@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # 10-firewall - DevOpsBroker NetworkManager script for loading the iptables/ip6tables firewall rules

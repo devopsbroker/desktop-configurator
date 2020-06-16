@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # configure-security.sh - DevOpsBroker script for configuring /etc/security

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # grub.tpl - DevOpsBroker script for generating /etc/default/grub configuration

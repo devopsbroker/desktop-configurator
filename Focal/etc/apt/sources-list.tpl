@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # sources-list.tpl - DevOpsBroker script for generating /etc/apt/sources.list

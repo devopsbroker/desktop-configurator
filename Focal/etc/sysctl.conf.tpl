@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # sysctl.conf.tpl - DevOpsBroker script for generating /etc/sysctl.conf configuration

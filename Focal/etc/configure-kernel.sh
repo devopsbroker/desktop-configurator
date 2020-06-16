@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # configure-kernel.sh - DevOpsBroker script for configuring Linux kernel tuning

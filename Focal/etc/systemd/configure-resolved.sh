@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # configure-resolved.sh - DevOpsBroker script for configuring systemd-resolved DNS server

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # configure-fstab.sh - DevOpsBroker script for configuring /etc/fstab

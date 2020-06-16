@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # ipset-config.sh - DevOpsBroker IPSet firewall script for Ubuntu Desktop machines

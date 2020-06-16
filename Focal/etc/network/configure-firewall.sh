@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # configure-firewall.sh - DevOpsBroker script for iptables/ip6tables configurations

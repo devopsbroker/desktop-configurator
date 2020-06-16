@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # convert-temp - DevOpsBroker Bash completion script for the convert-temp utility

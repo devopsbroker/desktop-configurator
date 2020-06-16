@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # 60-user-limits.conf.tpl - DevOpsBroker script for generating /etc/security/limits.d/60-user-limits.conf

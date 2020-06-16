@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #
 # configure-samba.sh - DevOpsBroker script for configuring Samba
