@@ -75,6 +75,9 @@ if [ "$ACTION" == "up" ]; then
 		/usr/bin/chown root:root /etc/NetworkManager/dispatcher.d/$IFACE/$TUNER_FILE
 		/usr/bin/chmod 0744 /etc/NetworkManager/dispatcher.d/$IFACE/$TUNER_FILE
 
+		# Call new network tuning script
+		/usr/bin/bash /etc/NetworkManager/dispatcher.d/$IFACE/$TUNER_FILE $IFACE $ACTION
+
 		/usr/bin/rm /tmp/speedtest.info
 	fi
 fi
