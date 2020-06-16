@@ -71,7 +71,7 @@ if [ "$ACTION" == "up" ]; then
 		INET_UL_SPEED=$(/usr/bin/awk '/Upload:/{ print $2 }' /tmp/speedtest.info)
 
 		# Create network tuning script
-		$EXEC_NETTUNER -d $INET_DL_SPEED -u $INET_UL_SPEED $IFACE > /etc/NetworkManager/dispatcher.d/$IFACE/$TUNER_FILE
+		$EXEC_NETTUNER -d $INET_DL_SPEED -u $INET_UL_SPEED -m $MAC_ADDR $IFACE > /etc/NetworkManager/dispatcher.d/$IFACE/$TUNER_FILE
 		/usr/bin/chown root:root /etc/NetworkManager/dispatcher.d/$IFACE/$TUNER_FILE
 		/usr/bin/chmod 0744 /etc/NetworkManager/dispatcher.d/$IFACE/$TUNER_FILE
 
