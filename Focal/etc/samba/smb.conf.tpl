@@ -77,7 +77,7 @@ fi
 ################################## Variables ##################################
 
 ## Bash exec variables
-EXEC_IFCONFIG=/sbin/ifconfig
+EXEC_IFCONFIG=/usr/sbin/ifconfig
 
 ## Options
 DEFAULT_NIC="${1:-}"
@@ -94,7 +94,7 @@ YEAR=$($EXEC_DATE +'%Y')
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Template ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Template
-/bin/cat << EOF
+/usr/bin/cat << EOF
 #
 # smb.conf - DevOpsBroker configuration for Samba; see smb.conf(5) for help
 #

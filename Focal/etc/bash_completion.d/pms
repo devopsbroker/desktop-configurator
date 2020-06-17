@@ -37,7 +37,7 @@ function _pms() {
 	# Exit if we have already completed the pms option
 	if [ $COMP_CWORD -eq $afterCommandIndex ]; then
 		if [ ${COMP_WORDS[1]} == 'install' ]; then
-			local files="$(/bin/ls ${currentWord}*)"
+			local files="$(/usr/bin/ls ${currentWord}*)"
 
 			COMPREPLY=( $(compgen -W "${files}" -- ${currentWord}) )
 		fi

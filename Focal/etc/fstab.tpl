@@ -172,7 +172,7 @@ for (( i=$index; i<$numEntries; i++ )); do
 done
 
 ## Template
-/bin/cat << EOF
+/usr/bin/cat << EOF
 #
 # fstab - DevOpsBroker /etc/fstab configuration
 #

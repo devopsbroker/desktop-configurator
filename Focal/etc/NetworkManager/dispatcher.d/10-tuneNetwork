@@ -34,7 +34,6 @@ set -o pipefail                # Exit if any statement in a pipeline returns a n
 
 ## Bash exec variables
 EXEC_NETTUNER=/usr/local/bin/nettuner
-EXEC_NMCLI=/usr/bin/nmcli
 EXEC_SPEED_TEST=/usr/bin/speedtest-cli
 
 ## Options

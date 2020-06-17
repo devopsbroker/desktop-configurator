@@ -125,7 +125,7 @@ if [ "$isEfiBoot" = 'true' ]; then
 fi
 
 ## Template
-/bin/cat << EOF
+/usr/bin/cat << EOF
 #
 # grub - DevOpsBroker configuration for /etc/default/grub
 #

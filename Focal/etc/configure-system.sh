@@ -120,7 +120,7 @@ fi
 
 ## Bash exec variables
 EXEC_LSCPU=/usr/bin/lscpu
-EXEC_LSMOD=/sbin/lsmod
+EXEC_LSMOD=/usr/sbin/lsmod
 EXEC_LSPCI=/usr/bin/lspci
 EXEC_PASSWD=/usr/bin/passwd
 EXEC_UPDATE_INITRAMFS=/usr/sbin/update-initramfs

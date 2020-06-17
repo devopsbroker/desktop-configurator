@@ -37,10 +37,10 @@
 #if [ -d /cache/$USER ] && [ -L $HOME/.cache/mozilla/firefox ]; then
 #
 #	# Delete the existing Firefox cache backup
-#	/bin/rm -f /cache/$USER/$profileDir.tar.gz
+#	/usr/bin/rm -f /cache/$USER/$profileDir.tar.gz
 #
-#	profileDir=$(/bin/ls -A /mnt/ramdisk/$USER/mozilla/firefox/)
-#	/bin/tar czvf /cache/$USER/$profileDir.tar.gz -C /mnt/ramdisk/$USER/mozilla/firefox/ $profileDir/
+#	profileDir=$(/usr/bin/ls -A /mnt/ramdisk/$USER/mozilla/firefox/)
+#	/usr/bin/tar czvf /cache/$USER/$profileDir.tar.gz -C /mnt/ramdisk/$USER/mozilla/firefox/ $profileDir/
 #
 #fi
 

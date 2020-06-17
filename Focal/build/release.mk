@@ -39,11 +39,20 @@ RELEASE_DIR := $(CURDIR)/pkg-debian
 
 INSTALL_DIR := /opt/devopsbroker/focal/desktop/configurator
 
-EXEC_CP := /bin/cp --preserve=timestamps
+EXEC_CHMOD := $(shell which chmod)
+EXEC_CHOWN := $(shell which chown)
+EXEC_CP := $(shell which cp) --preserve=timestamps
+EXEC_FIND := $(shell which find)
+EXEC_GZIP := $(shell which gzip)
+EXEC_LN := $(shell which ln)
+EXEC_MKDIR := $(shell which mkdir)
+EXEC_MV := $(shell which mv)
+EXEC_RM := $(shell which rm)
 
 ################################### Targets ###################################
 
 .ONESHELL:
+.SILENT:
 .PHONY: default clean createdirs copyfiles copybase copyetc copyhome copyperf \
 	copyusr configdocs installutils applysecurity package printenv
 
@@ -52,41 +61,41 @@ default: package
 clean:
 	echo
 	$(call printInfo,Cleaning existing release artifacts)
-	/bin/rm -rf $(BUILD_DIR)
-	/bin/rm -f $(TMPDIR)/$(PKG_ARCHIVE).deb
-	/bin/rm -rf $(RELEASE_DIR)
+	$(EXEC_RM) -rf $(BUILD_DIR)
+	$(EXEC_RM) -f $(TMPDIR)/$(PKG_ARCHIVE).deb
+	$(EXEC_RM) -rf $(RELEASE_DIR)
 
 createdirs: clean
 	echo
 	$(call printInfo,Creating $(RELEASE_DIR) directory)
-	/bin/mkdir -p --mode=0750 $(RELEASE_DIR)
+	$(EXEC_MKDIR) -p --mode=0750 $(RELEASE_DIR)
 
 	$(call printInfo,Creating $(BUILD_DIR) directory)
-	/bin/mkdir -p --mode=0755 $(BUILD_DIR)
+	$(EXEC_MKDIR) -p --mode=0755 $(BUILD_DIR)
 
 	$(call printInfo,Creating $(BUILD_DIR)/DEBIAN directory)
-	/bin/mkdir -p --mode=0755 $(BUILD_DIR)/DEBIAN
+	$(EXEC_MKDIR) -p --mode=0755 $(BUILD_DIR)/DEBIAN
 
 	$(call printInfo,Creating /cache directory)
-	/bin/mkdir -p --mode=0755 $(BUILD_DIR)/cache
-	/bin/chown root:users $(BUILD_DIR)/cache
+	$(EXEC_MKDIR) -p --mode=0755 $(BUILD_DIR)/cache
+	$(EXEC_CHOWN) root:users $(BUILD_DIR)/cache
 
 	$(call printInfo,Creating /etc directory)
-	/bin/mkdir -p --mode=0755 $(BUILD_DIR)/etc
+	$(EXEC_MKDIR) -p --mode=0755 $(BUILD_DIR)/etc
 
 	$(call printInfo,Creating /usr/share directory)
-	/bin/mkdir -p --mode=0755 $(BUILD_DIR)/usr/share
+	$(EXEC_MKDIR) -p --mode=0755 $(BUILD_DIR)/usr/share
 
 	$(call printInfo,Creating $(INSTALL_DIR) directory)
-	/bin/mkdir -p $(BUILD_DIR)/$(INSTALL_DIR)
+	$(EXEC_MKDIR) -p $(BUILD_DIR)/$(INSTALL_DIR)
 
 	$(call printInfo,Creating $(INSTALL_DIR)/archives directory)
-	/bin/mkdir -p $(BUILD_DIR)/$(INSTALL_DIR)/archives
+	$(EXEC_MKDIR) -p $(BUILD_DIR)/$(INSTALL_DIR)/archives
 
 	$(call printInfo,Setting directory permissions to 2750 and ownership to root:devops)
-	/bin/chmod -R 2750 $(BUILD_DIR)/opt/devopsbroker
-	/bin/chmod 0755 $(BUILD_DIR)/opt
-	/bin/chown -R root:devops $(BUILD_DIR)/opt/devopsbroker
+	$(EXEC_CHMOD) -R 2750 $(BUILD_DIR)/opt/devopsbroker
+	$(EXEC_CHMOD) 0755 $(BUILD_DIR)/opt
+	$(EXEC_CHOWN) -R root:devops $(BUILD_DIR)/opt/devopsbroker
 	echo
 
 copybase: createdirs
@@ -107,7 +116,7 @@ copyetc: createdirs
 	$(EXEC_CP) -r $(APPLICATION_DIR)/etc $(BUILD_DIR)/$(INSTALL_DIR)
 
 	$(call printInfo,Installing /etc/devops directory)
-	/bin/mv $(BUILD_DIR)/$(INSTALL_DIR)/etc/devops $(BUILD_DIR)/etc
+	$(EXEC_MV) $(BUILD_DIR)/$(INSTALL_DIR)/etc/devops $(BUILD_DIR)/etc
 
 copyhome: createdirs
 	$(call printInfo,Copying home/ files to $(INSTALL_DIR)/home)
@@ -129,74 +138,74 @@ configdocs: copyusr
 	$(EXEC_CP) $(APPLICATION_DIR)/doc/* $(BUILD_DIR)/usr/share/doc/desktop-configurator
 
 	$(call printInfo,Compressing changelog / NEWS.txt / README.txt)
-	/bin/gzip $(BUILD_DIR)/usr/share/doc/desktop-configurator/changelog
-	/bin/gzip $(BUILD_DIR)/usr/share/doc/desktop-configurator/NEWS.txt
-	/bin/gzip $(BUILD_DIR)/usr/share/doc/desktop-configurator/README.txt
+	$(EXEC_GZIP) $(BUILD_DIR)/usr/share/doc/desktop-configurator/changelog
+	$(EXEC_GZIP) $(BUILD_DIR)/usr/share/doc/desktop-configurator/NEWS.txt
+	$(EXEC_GZIP) $(BUILD_DIR)/usr/share/doc/desktop-configurator/README.txt
 
 installutils: copyusr
 	echo
 	$(call printInfo,Installing utilities to /usr/local)
 
 	$(call printInfo,Creating symbolic links for /usr/local/bin/convert-number)
-	/bin/ln -sT /usr/local/bin/convert-number $(BUILD_DIR)/usr/local/bin/binary
-	/bin/ln -sT /usr/local/bin/convert-number $(BUILD_DIR)/usr/local/bin/decimal
-	/bin/ln -sT /usr/local/bin/convert-number $(BUILD_DIR)/usr/local/bin/hex
-	/bin/ln -sT /usr/local/bin/convert-number $(BUILD_DIR)/usr/local/bin/octal
+	$(EXEC_LN) -sT /usr/local/bin/convert-number $(BUILD_DIR)/usr/local/bin/binary
+	$(EXEC_LN) -sT /usr/local/bin/convert-number $(BUILD_DIR)/usr/local/bin/decimal
+	$(EXEC_LN) -sT /usr/local/bin/convert-number $(BUILD_DIR)/usr/local/bin/hex
+	$(EXEC_LN) -sT /usr/local/bin/convert-number $(BUILD_DIR)/usr/local/bin/octal
 
 	$(call printInfo,Creating symbolic links for /usr/local/bin/convert-temp)
-	/bin/ln -sT /usr/local/bin/convert-temp $(BUILD_DIR)/usr/local/bin/celsius
-	/bin/ln -sT /usr/local/bin/convert-temp $(BUILD_DIR)/usr/local/bin/fahrenheit
-	/bin/ln -sT /usr/local/bin/convert-temp $(BUILD_DIR)/usr/local/bin/kelvin
+	$(EXEC_LN) -sT /usr/local/bin/convert-temp $(BUILD_DIR)/usr/local/bin/celsius
+	$(EXEC_LN) -sT /usr/local/bin/convert-temp $(BUILD_DIR)/usr/local/bin/fahrenheit
+	$(EXEC_LN) -sT /usr/local/bin/convert-temp $(BUILD_DIR)/usr/local/bin/kelvin
 
 	$(call printInfo,Creating symbolic links for $(INSTALL_DIR) files)
-	/bin/ln -sT $(INSTALL_DIR)/configure-desktop.sh $(BUILD_DIR)/usr/local/sbin/configure-desktop
-	/bin/ln -sT $(INSTALL_DIR)/device-drivers.sh $(BUILD_DIR)/usr/local/sbin/device-drivers
-	/bin/ln -sT $(INSTALL_DIR)/ttf-msclearfonts.sh $(BUILD_DIR)/usr/local/sbin/ttf-msclearfonts
+	$(EXEC_LN) -sT $(INSTALL_DIR)/configure-desktop.sh $(BUILD_DIR)/usr/local/sbin/configure-desktop
+	$(EXEC_LN) -sT $(INSTALL_DIR)/device-drivers.sh $(BUILD_DIR)/usr/local/sbin/device-drivers
+	$(EXEC_LN) -sT $(INSTALL_DIR)/ttf-msclearfonts.sh $(BUILD_DIR)/usr/local/sbin/ttf-msclearfonts
 
 	$(call printInfo,Creating symbolic links for $(INSTALL_DIR)/etc files)
-	/bin/ln -sT $(INSTALL_DIR)/etc/configure-amdgpu.sh $(BUILD_DIR)/usr/local/sbin/configure-amdgpu
-	/bin/ln -sT $(INSTALL_DIR)/etc/apt/configure-apt-mirror.sh $(BUILD_DIR)/usr/local/sbin/configure-apt-mirror
-	/bin/ln -sT $(INSTALL_DIR)/etc/configure-fstab.sh $(BUILD_DIR)/usr/local/sbin/configure-fstab
-	/bin/ln -sT $(INSTALL_DIR)/etc/default/configure-grub.sh $(BUILD_DIR)/usr/local/sbin/configure-grub
-	/bin/ln -sT $(INSTALL_DIR)/etc/configure-kernel.sh $(BUILD_DIR)/usr/local/sbin/configure-kernel
-	/bin/ln -sT $(INSTALL_DIR)/etc/NetworkManager/configure-nm.sh $(BUILD_DIR)/usr/local/sbin/configure-nm
-	/bin/ln -sT $(INSTALL_DIR)/etc/samba/configure-samba.sh $(BUILD_DIR)/usr/local/sbin/configure-samba
-	/bin/ln -sT $(INSTALL_DIR)/etc/security/configure-security.sh $(BUILD_DIR)/usr/local/sbin/configure-security
-	/bin/ln -sT $(INSTALL_DIR)/etc/configure-system.sh $(BUILD_DIR)/usr/local/sbin/configure-system
-	/bin/ln -sT $(INSTALL_DIR)/etc/udev/configure-udev.sh $(BUILD_DIR)/usr/local/sbin/configure-udev
-	/bin/ln -sT $(INSTALL_DIR)/etc/systemd/configure-resolved.sh $(BUILD_DIR)/usr/local/sbin/configure-resolved
-	/bin/ln -sT $(INSTALL_DIR)/etc/network/ip6tables-desktop.sh $(BUILD_DIR)/usr/local/sbin/ip6tables-desktop
-	/bin/ln -sT $(INSTALL_DIR)/etc/network/iptables-desktop.sh $(BUILD_DIR)/usr/local/sbin/iptables-desktop
-	/bin/ln -sT $(INSTALL_DIR)/etc/udev/rules.d/tune-diskio.tpl $(BUILD_DIR)/usr/local/sbin/tune-diskio
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-amdgpu.sh $(BUILD_DIR)/usr/local/sbin/configure-amdgpu
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/apt/configure-apt-mirror.sh $(BUILD_DIR)/usr/local/sbin/configure-apt-mirror
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-fstab.sh $(BUILD_DIR)/usr/local/sbin/configure-fstab
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/default/configure-grub.sh $(BUILD_DIR)/usr/local/sbin/configure-grub
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-kernel.sh $(BUILD_DIR)/usr/local/sbin/configure-kernel
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/NetworkManager/configure-nm.sh $(BUILD_DIR)/usr/local/sbin/configure-nm
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/samba/configure-samba.sh $(BUILD_DIR)/usr/local/sbin/configure-samba
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/security/configure-security.sh $(BUILD_DIR)/usr/local/sbin/configure-security
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-system.sh $(BUILD_DIR)/usr/local/sbin/configure-system
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/udev/configure-udev.sh $(BUILD_DIR)/usr/local/sbin/configure-udev
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/systemd/configure-resolved.sh $(BUILD_DIR)/usr/local/sbin/configure-resolved
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/network/ip6tables-desktop.sh $(BUILD_DIR)/usr/local/sbin/ip6tables-desktop
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/network/iptables-desktop.sh $(BUILD_DIR)/usr/local/sbin/iptables-desktop
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/udev/rules.d/tune-diskio.tpl $(BUILD_DIR)/usr/local/sbin/tune-diskio
 
 	$(call printInfo,Creating symbolic links for $(INSTALL_DIR)/home files)
-	/bin/ln -sT $(INSTALL_DIR)/home/configure-user.sh $(BUILD_DIR)/usr/local/sbin/configure-user
+	$(EXEC_LN) -sT $(INSTALL_DIR)/home/configure-user.sh $(BUILD_DIR)/usr/local/sbin/configure-user
 
 applysecurity: copyfiles configdocs installutils
 	echo
 	$(call printInfo,Applying security settings to $(INSTALL_DIR))
-	/usr/bin/find $(BUILD_DIR)/$(INSTALL_DIR) -type f \( ! -name "*.sh" ! -name "*.tpl" \) -exec /bin/chmod 640 {} +
-	/usr/bin/find $(BUILD_DIR)/$(INSTALL_DIR) -type f \( -name "*.sh" -o -name "*.tpl" \) -exec /bin/chmod 750 {} +
+	$(EXEC_FIND) $(BUILD_DIR)/$(INSTALL_DIR) -type f \( ! -name "*.sh" ! -name "*.tpl" \) -exec $(EXEC_CHMOD) 640 {} +
+	$(EXEC_FIND) $(BUILD_DIR)/$(INSTALL_DIR) -type f \( -name "*.sh" -o -name "*.tpl" \) -exec $(EXEC_CHMOD) 750 {} +
 
 	$(call printInfo,Applying security settings to /etc)
-	/usr/bin/find $(BUILD_DIR)/etc -type d -exec /bin/chmod 00755 {} +
-	/bin/chmod 644 $(BUILD_DIR)/etc/devops/*
-	/bin/chown -R root:root $(BUILD_DIR)/etc
+	$(EXEC_FIND) $(BUILD_DIR)/etc -type d -exec $(EXEC_CHMOD) 00755 {} +
+	$(EXEC_CHMOD) 644 $(BUILD_DIR)/etc/devops/*
+	$(EXEC_CHOWN) -R root:root $(BUILD_DIR)/etc
 
 	$(call printInfo,Applying security settings to /usr)
-	/usr/bin/find $(BUILD_DIR)/usr -type d -exec /bin/chmod 00755 {} +
-	/bin/chown -R root:root $(BUILD_DIR)/usr
+	$(EXEC_FIND) $(BUILD_DIR)/usr -type d -exec $(EXEC_CHMOD) 00755 {} +
+	$(EXEC_CHOWN) -R root:root $(BUILD_DIR)/usr
 
 	$(call printInfo,Applying security settings to /usr/share/doc/desktop-configurator)
-	/bin/chmod 644 $(BUILD_DIR)/usr/share/doc/desktop-configurator/*
+	$(EXEC_CHMOD) 644 $(BUILD_DIR)/usr/share/doc/desktop-configurator/*
 
 	$(call printInfo,Applying security settings to /usr/local/bin)
-	/bin/chmod -R 755 $(BUILD_DIR)/usr/local/bin/*
-	/bin/chown -R --no-dereference root:users $(BUILD_DIR)/usr/local/bin/*
+	$(EXEC_CHMOD) -R 755 $(BUILD_DIR)/usr/local/bin/*
+	$(EXEC_CHOWN) -R --no-dereference root:users $(BUILD_DIR)/usr/local/bin/*
 
 	$(call printInfo,Applying security settings to /usr/local/sbin)
-	/bin/chmod 750 $(BUILD_DIR)/usr/local/sbin/*
-	/bin/chown --no-dereference root:sudo $(BUILD_DIR)/usr/local/sbin/*
+	$(EXEC_CHMOD) 750 $(BUILD_DIR)/usr/local/sbin/*
+	$(EXEC_CHOWN) --no-dereference root:sudo $(BUILD_DIR)/usr/local/sbin/*
 
 package: applysecurity
 	echo
@@ -215,13 +224,13 @@ package: applysecurity
 	/usr/local/bin/md5sums $(BUILD_DIR)
 
 	$(call printInfo,Applying security settings to /DEBIAN files)
-	/bin/chmod 644 $(BUILD_DIR)/DEBIAN/control $(BUILD_DIR)/DEBIAN/conffiles $(BUILD_DIR)/DEBIAN/md5sums
-	/bin/chmod 755 $(BUILD_DIR)/DEBIAN/preinst
+	$(EXEC_CHMOD) 644 $(BUILD_DIR)/DEBIAN/control $(BUILD_DIR)/DEBIAN/conffiles $(BUILD_DIR)/DEBIAN/md5sums
+	$(EXEC_CHMOD) 755 $(BUILD_DIR)/DEBIAN/preinst
 
 	echo
 	$(call printInfo,Building $(PKG_ARCHIVE).deb)
 	/usr/bin/dpkg-deb -b $(BUILD_DIR)
-	/bin/mv $(TMPDIR)/$(PKG_ARCHIVE).deb $(RELEASE_DIR)
+	$(EXEC_MV) $(TMPDIR)/$(PKG_ARCHIVE).deb $(RELEASE_DIR)
 
 	echo
 	$(call printInfo,Generating SHA256SUM and fileinfo.html)
@@ -229,10 +238,10 @@ package: applysecurity
 	/usr/bin/sha256sum $(PKG_ARCHIVE).deb > SHA256SUM && \
 	/usr/local/bin/venture fileinfo $(PKG_ARCHIVE).deb
 
-	/bin/chown -R $${SUDO_USER}:$${SUDO_USER} $(RELEASE_DIR)
-	/bin/chmod 640 $(RELEASE_DIR)/*
+	$(EXEC_CHOWN) -R $${SUDO_USER}:$${SUDO_USER} $(RELEASE_DIR)
+	$(EXEC_CHMOD) 640 $(RELEASE_DIR)/*
 
-	/bin/rm -rf $(BUILD_DIR)
+	$(EXEC_RM) -rf $(BUILD_DIR)
 
 printenv:
 	echo "  MAKEFILE_LIST: $(MAKEFILE_LIST)"

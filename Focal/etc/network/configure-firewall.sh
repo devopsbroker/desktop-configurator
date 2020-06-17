@@ -96,8 +96,8 @@ function installPackage() {
 ################################## Variables ##################################
 
 ## Bash exec variables
-IPTABLES_RESTORE=/sbin/iptables-restore
-IP6TABLES_RESTORE=/sbin/ip6tables-restore
+IPTABLES_RESTORE=/usr/sbin/iptables-restore
+IP6TABLES_RESTORE=/usr/sbin/ip6tables-restore
 IPSET=/sbin/ipset
 
 ## Options

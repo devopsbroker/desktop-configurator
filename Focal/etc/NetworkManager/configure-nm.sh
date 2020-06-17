@@ -138,7 +138,6 @@ function installNMScript() {
 ################################## Variables ##################################
 
 ## Bash exec variables
-EXEC_NETTUNER=/usr/local/bin/nettuner
 EXEC_NMCLI=/usr/bin/nmcli
 
 ## Options

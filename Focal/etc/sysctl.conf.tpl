@@ -90,7 +90,6 @@ fi
 ################################## Variables ##################################
 
 ## Bash exec variables
-EXEC_NETTUNER=/usr/local/bin/nettuner
 EXEC_SCHEDTUNER=/usr/local/sbin/schedtuner
 
 ## Options
@@ -233,7 +232,7 @@ esac
 VM_MIN_FREE_KB=$[ $RAM_TOTAL / 100 ]
 
 ## Template
-/bin/cat << EOF
+/usr/bin/cat << EOF
 #
 # sysctl.conf - DevOpsBroker Linux kernel tuning configuration file
 #

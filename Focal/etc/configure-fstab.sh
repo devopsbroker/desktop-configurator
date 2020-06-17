@@ -153,10 +153,10 @@ function tuneReservedBlocks() {
 
 ## Bash exec variables
 EXEC_FALLOCATE=/usr/bin/fallocate
-EXEC_FINDMNT=/bin/findmnt
-EXEC_MKSWAP=/sbin/mkswap
-EXEC_SWAPON=/sbin/swapon
-EXEC_TUNE2FS=/sbin/tune2fs
+EXEC_FINDMNT=/usr/bin/findmnt
+EXEC_MKSWAP=/usr/sbin/mkswap
+EXEC_SWAPON=/usr/sbin/swapon
+EXEC_TUNE2FS=/usr/sbin/tune2fs
 
 ## Variables
 export TMPDIR=${TMPDIR:-'/tmp'}

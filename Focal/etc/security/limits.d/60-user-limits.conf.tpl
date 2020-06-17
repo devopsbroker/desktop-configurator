@@ -77,7 +77,7 @@ USER_FILE_MAX_SOFT=$[ $FS_FILE_MAX / 4 ]
 USER_FILE_MAX_HARD=$[ $FS_FILE_MAX / 2 ]
 
 ## Template
-/bin/cat << EOF
+/usr/bin/cat << EOF
 #
 # 60-user-limits.conf - DevOpsBroker configuration for user limits (bash ulimit)
 #

@@ -104,7 +104,7 @@ tuneDiskIOTpl=$(isExecutable "$SCRIPT_DIR"/rules.d/tune-diskio.tpl)
 ################################## Variables ##################################
 
 ## Bash exec variables
-EXEC_LSBLK=/bin/lsblk
+EXEC_LSBLK=/usr/bin/lsblk
 
 ## Variables
 export TMPDIR=${TMPDIR:-'/tmp'}

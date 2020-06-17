@@ -41,11 +41,15 @@ APPLICATION_DIR = $(realpath $(CURDIR)/..)
 UTILITIES_DIR = $(realpath $(CURDIR)/../../../Utilities)
 RELEASE_DIR := $(CURDIR)/tar-test
 
-EXEC_CP := /bin/cp --preserve=timestamps
+EXEC_CP := $(shell which cp) --preserve=timestamps
+EXEC_MKDIR := $(shell which mkdir)
+EXEC_RM := $(shell which rm)
+EXEC_TAR := $(shell which tar)
 
 ################################### Targets ###################################
 
 .ONESHELL:
+.SILENT:
 .PHONY: default clean makeutils createdirs copybase copydoc copyetc copyhome \
 	copyperf copyusr tar printenv
 
@@ -54,9 +58,9 @@ default: tar
 clean:
 	echo
 	$(call printInfo,Cleaning existing test artifacts)
-	/bin/rm -rf $(BUILD_DIR)
-	/bin/rm -f $(TMPDIR)/$(PKG_ARCHIVE).tar.xz
-	/bin/rm -rf $(RELEASE_DIR)
+	$(EXEC_RM) -rf $(BUILD_DIR)
+	$(EXEC_RM) -f $(TMPDIR)/$(PKG_ARCHIVE).tar.xz
+	$(EXEC_RM) -rf $(RELEASE_DIR)
 
 makeutils:
 	echo
@@ -67,13 +71,13 @@ makeutils:
 createdirs: clean
 	echo
 	$(call printInfo,Creating $(RELEASE_DIR) directory)
-	/bin/mkdir -p --mode=0750 $(RELEASE_DIR)
+	$(EXEC_MKDIR) -p --mode=0750 $(RELEASE_DIR)
 
 	$(call printInfo,Creating $(BUILD_DIR) directory)
-	/bin/mkdir -p --mode=0755 $(BUILD_DIR)
+	$(EXEC_MKDIR) -p --mode=0755 $(BUILD_DIR)
 
 	$(call printInfo,Creating $(BUILD_DIR)/archives directory)
-	/bin/mkdir -p $(BUILD_DIR)/archives
+	$(EXEC_MKDIR) -p $(BUILD_DIR)/archives
 
 copybase: createdirs
 	$(call printInfo,Copying configure-desktop.sh to $(BUILD_DIR))
@@ -117,7 +121,7 @@ copyusr: createdirs
 tar: copybase copydoc copyetc copyhome copyperf copyusr
 	echo
 	$(call printInfo,Building $(PKG_ARCHIVE).tar.xz)
-	/bin/tar cJvf $(RELEASE_DIR)/$(PKG_ARCHIVE).tar.xz --directory $(TMPDIR) $(PKG_ARCHIVE)
+	$(EXEC_TAR) cJvf $(RELEASE_DIR)/$(PKG_ARCHIVE).tar.xz --directory $(TMPDIR) $(PKG_ARCHIVE)
 
 	echo
 	$(call printInfo,Generating SHA256SUM and fileinfo.html)
@@ -125,7 +129,7 @@ tar: copybase copydoc copyetc copyhome copyperf copyusr
 	/usr/bin/sha256sum $(PKG_ARCHIVE).tar.xz > SHA256SUM && \
 	/usr/local/bin/venture fileinfo $(PKG_ARCHIVE).tar.xz
 
-	/bin/rm -rf $(BUILD_DIR)
+	$(EXEC_RM) -rf $(BUILD_DIR)
 
 printenv:
 	echo "  MAKEFILE_LIST: $(MAKEFILE_LIST)"

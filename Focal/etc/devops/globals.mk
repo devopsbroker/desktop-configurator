@@ -31,7 +31,7 @@ endef
 ################################## Variables ##################################
 
 DEBUG ?= 1
-SHELL := /bin/bash
+SHELL := /usr/bin/bash
 TMPDIR ?= /tmp
 UMASK=0027
 

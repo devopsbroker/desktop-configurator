@@ -103,10 +103,10 @@ declare -a partitionList=()
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ OPTION Parsing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-userRecord="$($EXEC_GETENT passwd $username)"
+userRecord="$($EXEC_GETENT passwd $username || true)"
 
 # Ensure the argument is a valid username
-if [ ${#userRecord} -eq 0 ]; then
+if [ -z "$userRecord" ]; then
 	printError "$SCRIPT_EXEC" "Cannot find '$username': No such user"
 	echo
 	printUsage "$SCRIPT_EXEC USER"
@@ -114,14 +114,8 @@ if [ ${#userRecord} -eq 0 ]; then
 	exit 1
 fi
 
+# Set the user's home directory
 IFS=':'; userInfo=($userRecord); unset IFS;
-
-# Ensure the user is using bash for the shell
-if [ "${userInfo[6]}" != '/bin/bash' ]; then
-	printError "$SCRIPT_EXEC" "User shell not bash: ${userInfo[6]}"
-	exit 1
-fi
-
 userhome="${userInfo[5]}"
 
 ################################### Actions ###################################

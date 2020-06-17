@@ -34,7 +34,7 @@ function _git-repo() {
 	# Check if we need to exit when we have already completed the git-repo command option
 	if [ $COMP_CWORD -ge 2 ]; then
 		if [ $commandOption == "discard" ]; then
-			COMPREPLY+=($(/bin/ls ${currentWord}*))
+			COMPREPLY+=($(/usr/bin/ls ${currentWord}*))
 		fi
 
 		return

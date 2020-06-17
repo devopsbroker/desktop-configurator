@@ -31,7 +31,7 @@
 umask 027
 
 # Set PATH so it includes user's private bin directories
-PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+PATH="$PATH:$HOME/bin:$HOME/.local/bin"
 
 # Set USER_UID environment variable
 export USER_UID=$(/usr/bin/id -u $USER)
@@ -40,24 +40,24 @@ export USER_UID=$(/usr/bin/id -u $USER)
 if [ -d /mnt/ramdisk ]; then
 	if [ ! -d /mnt/ramdisk/$USER ]; then
 		# Create user directory in ramdisk
-		/bin/mkdir -pv --mode=0700 /mnt/ramdisk/$USER
+		/usr/bin/mkdir -pv --mode=0700 /mnt/ramdisk/$USER
 
 		# Create directory for Mozilla Firefox cache
-		/bin/mkdir -pv --mode=0700 /mnt/ramdisk/$USER/mozilla/firefox
+		/usr/bin/mkdir -pv --mode=0700 /mnt/ramdisk/$USER/mozilla/firefox
 
 		# Migrate Mozilla Firefox cache to the ramdisk
 		if [ ! -L $HOME/.cache/mozilla/firefox ]; then
-			/bin/cp -a $HOME/.cache/mozilla/firefox/* /mnt/ramdisk/$USER/mozilla/firefox
-			/bin/rm -rf $HOME/.cache/mozilla/firefox
+			/usr/bin/cp -a $HOME/.cache/mozilla/firefox/* /mnt/ramdisk/$USER/mozilla/firefox
+			/usr/bin/rm -rf $HOME/.cache/mozilla/firefox
 			/usr/local/bin/symlink -o $USER:$USER $HOME/.cache/mozilla/firefox /mnt/ramdisk/$USER/mozilla/firefox
 		fi
 
 		# Adjust file and directory ownership to the user
-		/bin/chown -R $USER:$USER /mnt/ramdisk/$USER
+		/usr/bin/chown -R $USER:$USER /mnt/ramdisk/$USER
 	fi
 
 	if [ ! -d /mnt/ramdisk/tmp ]; then
-		/bin/mkdir -p --mode=1777 /mnt/ramdisk/tmp
+		/usr/bin/mkdir -p --mode=1777 /mnt/ramdisk/tmp
 	fi
 
 	# Set TMPDIR to /mnt/ramdisk/tmp for gcc and other programs
