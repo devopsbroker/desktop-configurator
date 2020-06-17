@@ -3,7 +3,7 @@
 #
 # 60-user-limits.conf.tpl - DevOpsBroker script for generating /etc/security/limits.d/60-user-limits.conf
 #
-# Copyright (C) 2018-2019 Edward Smith <edwardsmith@devopsbroker.org>
+# Copyright (C) 2018-2020 Edward Smith <edwardsmith@devopsbroker.org>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software

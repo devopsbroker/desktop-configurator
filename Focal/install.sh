@@ -3,7 +3,7 @@
 #
 # install.sh - DevOpsBroker Ubuntu 18.04 Desktop Configurator install script
 #
-# Copyright (C) 2020 Edward Smith <edwardsmith@devopsbroker.org>
+# Copyright (C) 2018-2020 Edward Smith <edwardsmith@devopsbroker.org>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software

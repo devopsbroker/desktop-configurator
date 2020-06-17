@@ -1,7 +1,7 @@
 #
 # test.mk - DevOpsBroker makefile for creating a .tar.xz archive of Ubuntu 18.04 Desktop Configurator
 #
-# Copyright (C) 2018 Edward Smith <edwardsmith@devopsbroker.org>
+# Copyright (C) 2018-2020 Edward Smith <edwardsmith@devopsbroker.org>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
