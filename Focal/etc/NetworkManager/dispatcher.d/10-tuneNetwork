@@ -51,7 +51,7 @@ TUNER_FILE=""
 if [ "$ACTION" == "up" ]; then
 	MAC_ADDR="$(/usr/sbin/arp -n -a $IP4_GATEWAY | /usr/bin/awk '{print $4}')"
 	MD5SUM="$(echo \"$MAC_ADDR\" | /usr/bin/md5sum)"
-	TUNER_FILE="tune-${MD5SUM:0:8}"
+	TUNER_FILE="20-tune-${MD5SUM:0:8}"
 
 	# Create a subdirectory for the network interface name
 	if [ ! -d /etc/NetworkManager/dispatcher.d/$IFACE ]; then

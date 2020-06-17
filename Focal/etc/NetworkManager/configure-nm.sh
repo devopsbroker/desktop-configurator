@@ -123,6 +123,7 @@ fi
 # -----------------------------------------------------------------------------
 function installNMScript() {
 	local nmScript="$1"
+	INSTALL_CONFIG=false
 
 	if [ ! -f "/etc/NetworkManager/$nmScript" ] || [ "$SCRIPT_DIR/$nmScript" -nt "/etc/NetworkManager/$nmScript" ]; then
 		printInfo "Installing /etc/NetworkManager/$nmScript"
@@ -130,8 +131,7 @@ function installNMScript() {
 		# Install as root:root with rwxr-xr-x privileges
 		$EXEC_INSTALL -o root -g root -m 755 "$SCRIPT_DIR/$nmScript" "/etc/NetworkManager/$nmScript"
 
-		restartNetworkManager=true
-		echoOnExit=true
+		INSTALL_CONFIG=true
 	fi
 }
 
@@ -140,17 +140,13 @@ function installNMScript() {
 ## Bash exec variables
 EXEC_NETTUNER=/usr/local/bin/nettuner
 EXEC_NMCLI=/usr/bin/nmcli
-EXEC_SPEED_TEST=/usr/bin/speedtest-cli
 
 ## Options
 NIC="${1:-}"
 
 ## Variables
 export TMPDIR=${TMPDIR:-'/tmp'}
-isWireless=false
-restartNetworkManager=false
-restartNIC=false
-echoOnExit=false
+CONN_UUID=""
 
 ################################### Actions ###################################
 
@@ -187,130 +183,58 @@ if [[ "$($EXEC_READLINK /sys/class/net/$NIC)" == *"/devices/virtual/"* ]]; then
 	exit 0
 fi
 
-# ---------------------------- Network Information ----------------------------
-
-if [ ! -f /etc/devops/speedtest.info ]; then
-	printInfo 'Executing Internet speed test'
-	$EXEC_SPEED_TEST | tee /etc/devops/speedtest.info
-
-	printInfo 'Internet speed test finished'
-	echo
-fi
-# Internet Download speed
-INET_DL_SPEED=$($EXEC_AWK '/Download:/{ print $2 }' /etc/devops/speedtest.info)
-
-# Internet Upload speed
-INET_UL_SPEED=$($EXEC_AWK '/Upload:/{ print $2 }' /etc/devops/speedtest.info)
-
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tasks ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Set isWireless to 'true' if $NIC is a wireless interface device
-if [ -d /sys/class/net/$NIC/wireless ]; then
-	isWireless=true
-fi
 
 # Install /etc/NetworkManager/NetworkManager.conf
 installConfig 'NetworkManager.conf' "$SCRIPT_DIR" /etc/NetworkManager
 
-if [ "$INSTALL_CONFIG" == 'true' ]; then
-	restartNetworkManager=true
-	echoOnExit=true
-fi
-
-# Install /etc/NetworkManager/dispatcher.d/pre-up.d/10-firewall
-installNMScript 'dispatcher.d/pre-up.d/10-firewall'
-
-# Install /etc/NetworkManager/dispatcher.d/pre-up.d/20-nf_conntrack
-installNMScript 'dispatcher.d/pre-up.d/20-nf_conntrack'
+# Retrieve the default NIC connection UUID
+CONN_UUID="$($EXEC_NMCLI --fields UUID,TYPE,DEVICE connection show | $EXEC_GREP -F $NIC | $EXEC_CUT -d ' ' -f1)"
 
 # Modify NetworkManager connection for default network interface
-if [ "$isWireless" == 'false' ] && [ ! -f /etc/NetworkManager/system-connections/$NIC ]; then
-	printInfo "Modifying NetworkManager connection profile for '$NIC'"
+printInfo "Modifying NetworkManager connection profile for '$NIC'"
 
-	# Load existing NetworkManager connection profile
-	unset IFS; connProfile=( $($EXEC_NMCLI --fields UUID,TYPE,DEVICE connection show --active | grep -F $NIC) ); FS=$'\n\t'
+$EXEC_NMCLI connection modify uuid $CONN_UUID \
+	connection.autoconnect yes \
+	connection.autoconnect-priority 1
 
-	$EXEC_NMCLI connection modify uuid ${connProfile[0]} \
-		connection.id $NIC \
-		connection.interface-name $NIC \
-		connection.autoconnect yes \
-		connection.autoconnect-priority 1
+$EXEC_NMCLI connection modify uuid $CONN_UUID \
+	ipv4.dhcp-send-hostname yes \
+	ipv4.dns-search "" \
+	ipv4.ignore-auto-dns yes \
+	ipv4.may-fail no \
+	ipv4.method auto \
+	ipv4.route-metric 100
 
-	if [ "${connProfile[1]}" == '802-3-ethernet' ]; then
-		$EXEC_NMCLI connection modify uuid ${connProfile[0]} \
-			802-3-ethernet.wake-on-lan 32768
-	fi
-
-	$EXEC_NMCLI connection modify uuid ${connProfile[0]} \
-		ipv4.dhcp-send-hostname yes \
-		ipv4.dns-search "" \
-		ipv4.ignore-auto-dns yes \
-		ipv4.may-fail no \
-		ipv4.method auto \
-		ipv4.route-metric 100
-
-	$EXEC_NMCLI connection modify uuid ${connProfile[0]} \
-		ipv6.addr-gen-mode stable-privacy \
-		ipv6.dhcp-send-hostname yes \
-		ipv6.dns-search "" \
-		ipv6.ignore-auto-dns yes \
-		ipv6.ip6-privacy 0 \
-		ipv6.may-fail yes \
-		ipv6.method auto \
-		ipv6.route-metric 100
-
-	restartNetworkManager=true
-	echoOnExit=true
-fi
+$EXEC_NMCLI connection modify uuid $CONN_UUID \
+	ipv6.addr-gen-mode stable-privacy \
+	ipv6.dhcp-send-hostname yes \
+	ipv6.dns-search "" \
+	ipv6.ignore-auto-dns yes \
+	ipv6.ip6-privacy 0 \
+	ipv6.may-fail yes \
+	ipv6.method auto \
+	ipv6.route-metric 100
 
 #
 # /etc/NetworkManager/dispatcher.d Configuration
 #
 
-if [ ! -f /etc/NetworkManager/dispatcher.d/tune-$NIC ]; then
-	printInfo "Installing /etc/NetworkManager/dispatcher.d/tune-$NIC"
+installNMScript 'dispatcher.d/10-tuneNetwork'
 
-	# Execute nettuner
-	$($EXEC_NETTUNER -d $INET_DL_SPEED -u $INET_UL_SPEED -g nm $NIC > "$TMPDIR"/tune-$NIC)
+if [ "$INSTALL_CONFIG" == "true" ]; then
+	IP4_GATEWAY="$(/usr/sbin/ip route show 0.0.0.0/0 dev $NIC | /usr/bin/awk '{print $3}')"
 
-	# Install as root:root with rwxr-xr-x privileges
-	$EXEC_INSTALL -o root -g root -m 755 "$TMPDIR"/tune-$NIC /etc/NetworkManager/dispatcher.d
-
-	# Clean up
-	$EXEC_RM "$TMPDIR"/tune-$NIC
-
-	restartNIC=true
-	echoOnExit=true
-
-elif [ "$EXEC_NETTUNER" -nt /etc/NetworkManager/dispatcher.d/tune-$NIC ]; then
-	printInfo "Updating /etc/NetworkManager/dispatcher.d/tune-$NIC"
-
-	# Execute nettuner
-	$($EXEC_NETTUNER -d $INET_DL_SPEED -u $INET_UL_SPEED -g nm $NIC > "$TMPDIR"/tune-$NIC)
-
-	# Install as root:root with rwxr-xr-x privileges
-	$EXEC_INSTALL -o root -g root -m 755 "$TMPDIR"/tune-$NIC /etc/NetworkManager/dispatcher.d
-
-	# Clean up
-	$EXEC_RM "$TMPDIR"/tune-$NIC
-
-	restartNIC=true
-	echoOnExit=true
+	/usr/bin/bash IP4_GATEWAY=$IP4_GATEWAY /etc/NetworkManager/dispatcher.d/10-tuneNetwork $NIC 'up'
 fi
 
-if [ "$restartNetworkManager" == 'true' ]; then
-	printInfo "Restarting NetworkManager service"
-	echo
-	$EXEC_SYSTEMCTL restart NetworkManager.service
+installNMScript 'dispatcher.d/pre-up.d/10-firewall'
+installNMScript 'dispatcher.d/pre-up.d/20-nf_conntrack'
 
-elif [ "$restartNIC" == 'true' ]; then
-	printInfo "Restarting $NIC interface"
-	echo
-	$EXEC_NMCLI device disconnect $NIC && $EXEC_NMCLI device connect $NIC
-fi
+printInfo "Restarting NetworkManager service"
+echo
+$EXEC_SYSTEMCTL restart NetworkManager.service
 
-if [ $echoOnExit == 'true' ]; then
-	echo
-fi
+echo
 
 exit 0
