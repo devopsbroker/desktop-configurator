@@ -1,0 +1,88 @@
+#!/usr/bin/bash
+
+#
+# convert-number - DevOpsBroker Bash completion script for the convert-number utility
+#
+# Copyright (C) 2020 Edward Smith <edwardsmith@devopsbroker.org>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# -----------------------------------------------------------------------------
+# Developed on Ubuntu 20.04 LTS running kernel.osrelease = 5.4.0-37
+#
+# Bash Completion FAQ Information
+# -------------------------------
+# COMP_CWORD: Index into COMP_WORDS of the word containing the current cursor position
+# -----------------------------------------------------------------------------
+#
+
+function _convert-number() {
+
+	# Exit if we have already completed the first two words
+	if [ $COMP_CWORD -eq 2 ]; then
+		return
+	fi
+
+	local programName=${COMP_WORDS[0]}
+	local firstWord=${COMP_WORDS[1]}
+
+	COMPREPLY=()
+
+	if [ "$programName" == 'binary' ]; then
+		if [ -z "$firstWord" ]; then
+			COMPREPLY+=('decimal' 'hex' 'octal')
+		elif [[ "decimal" == "$firstWord"* ]]; then
+			COMPREPLY+=('decimal')
+		elif [[ "hex" == "$firstWord"* ]]; then
+			COMPREPLY+=('hex')
+		elif [[ "octal" == "$firstWord"* ]]; then
+			COMPREPLY+=('octal')
+		fi
+	elif [ "$programName" == 'decimal' ]; then
+		if [ -z "$firstWord" ]; then
+			COMPREPLY+=('binary' 'hex' 'octal')
+		elif [[ "binary" == "$firstWord"* ]]; then
+			COMPREPLY+=('binary')
+		elif [[ "hex" == "$firstWord"* ]]; then
+			COMPREPLY+=('hex')
+		elif [[ "octal" == "$firstWord"* ]]; then
+			COMPREPLY+=('octal')
+		fi
+	elif [ "$programName" == 'hex' ]; then
+		if [ -z "$firstWord" ]; then
+			COMPREPLY+=('binary' 'decimal' 'octal')
+		elif [[ "binary" == "$firstWord"* ]]; then
+			COMPREPLY+=('binary')
+		elif [[ "decimal" == "$firstWord"* ]]; then
+			COMPREPLY+=('decimal')
+		elif [[ "octal" == "$firstWord"* ]]; then
+			COMPREPLY+=('octal')
+		fi
+	elif [ "$programName" == 'octal' ]; then
+		if [ -z "$firstWord" ]; then
+			COMPREPLY+=('binary' 'decimal' 'hex')
+		elif [[ "binary" == "$firstWord"* ]]; then
+			COMPREPLY+=('binary')
+		elif [[ "decimal" == "$firstWord"* ]]; then
+			COMPREPLY+=('decimal')
+		elif [[ "hex" == "$firstWord"* ]]; then
+			COMPREPLY+=('hex')
+		fi
+	fi
+}
+
+complete -F _convert-number binary
+complete -F _convert-number decimal
+complete -F _convert-number hex
+complete -F _convert-number octal
