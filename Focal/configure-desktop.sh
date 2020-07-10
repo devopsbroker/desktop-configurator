@@ -22,7 +22,7 @@
 # Developed on Ubuntu 20.04 LTS running kernel.osrelease = 5.4.0-31
 #
 # Performs the following configurations:
-#   o Configures IPv4 firewall and IPv6 firewall using iptables and ip6tables
+#   o Configures IPv4 firewall and IPv6 firewall using nftables
 #   o Installs all DevOpsBroker system administration and user utilities
 #   o Installs a number of useful applications, libraries and utilities
 #   o Installs any available proprietary drivers
@@ -181,7 +181,7 @@ function uninstallPackage() {
 EXEC_ADD_APT_REPO=/usr/bin/add-apt-repository
 
 ## Variables
-DEFAULT_NIC=''
+DEFAULT_NIC="$(getDefaultNIC)"
 IS_AMD=0
 PKG_INSTALLED=false
 
@@ -201,9 +201,7 @@ fi
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Firewall ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-DEFAULT_NIC="$(getDefaultNIC)"
-
-"$SCRIPT_DIR/etc/network/configure-firewall.sh" $DEFAULT_NIC
+"$SCRIPT_DIR/etc/nftables/configure-nftables.sh"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~ DevOpsBroker Utilities ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

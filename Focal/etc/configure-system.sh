@@ -40,7 +40,6 @@
 # o /etc/devops/globals.mk
 # o /etc/modprobe.d/kvm-amd.conf
 # o /etc/modprobe.d/nf_conntrack.conf
-# o /etc/network/interfaces
 # o /etc/pam.d/common-session
 # o /etc/ssl/ca.conf
 # o /etc/ssl/req.conf
@@ -140,29 +139,17 @@ fi
 
 printBox "DevOpsBroker $UBUNTU_RELEASE System Configurator" 'true'
 
-# Install /etc/adduser.conf
 installConfig 'adduser.conf' "$SCRIPT_DIR" /etc
-
-# Install /etc/bash.bashrc
 installConfig 'bash.bashrc' "$SCRIPT_DIR" /etc
-
-# Install /etc/modules
 installConfig 'modules' "$SCRIPT_DIR" /etc
 
 if [ "$INSTALL_CONFIG" == 'true' ]; then
 	updateInitramfs=true
 fi
 
-# Install /etc/ntp.conf
 installConfig 'ntp.conf' "$SCRIPT_DIR" /etc 'ntp'
-
-# Install /etc/profile
 installConfig 'profile' "$SCRIPT_DIR" /etc
-
-# Install /etc/tidy.conf
 installConfig 'tidy.conf' "$SCRIPT_DIR" /etc
-
-# Install /etc/apparmor.d/local/usr.bin.evince
 installConfig 'usr.bin.evince' "$SCRIPT_DIR"/apparmor.d/local /etc/apparmor.d/local
 
 # Install /etc/bash_completion.d/*
@@ -173,22 +160,11 @@ $EXEC_CHMOD --changes 644 /etc/bash_completion.d/*
 installConfig 'resolvconf' "$SCRIPT_DIR"/default /etc/default
 
 if [ -d "$SCRIPT_DIR"/devops ]; then
-	# Install /etc/devops/ansi.conf
 	installConfig 'ansi.conf' "$SCRIPT_DIR/devops" /etc/devops
-
-	# Install /etc/devops/exec.conf
 	installConfig 'exec.conf' "$SCRIPT_DIR/devops" /etc/devops
-
-	# Install /etc/devops/functions.conf
 	installConfig 'functions.conf' "$SCRIPT_DIR/devops" /etc/devops
-
-	# Install /etc/devops/functions-admin.conf
 	installConfig 'functions-admin.conf' "$SCRIPT_DIR/devops" /etc/devops
-
-	# Install /etc/devops/functions-io.conf
 	installConfig 'functions-io.conf' "$SCRIPT_DIR/devops" /etc/devops
-
-	# Install /etc/devops/globals.mk
 	installConfig 'globals.mk' "$SCRIPT_DIR/devops" /etc/devops
 fi
 
@@ -206,15 +182,6 @@ installConfig 'nf_conntrack.conf' "$SCRIPT_DIR"/modprobe.d /etc/modprobe.d
 
 if [ "$INSTALL_CONFIG" == 'true' ]; then
 	updateInitramfs=true
-fi
-
-# Configure /etc/network/interfaces
-if ! $EXEC_GREP -Fq 'iface lo inet6 loopback' /etc/network/interfaces; then
-	printInfo 'Configuring /etc/network/interfaces'
-
-	echo 'iface lo inet6 loopback' >> /etc/network/interfaces
-
-	echoOnExit=true
 fi
 
 # Install /etc/pam.d/common-session

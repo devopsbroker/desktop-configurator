@@ -189,11 +189,10 @@ createSymlink /usr/local/sbin/configure-nvidia "$INSTALL_DIR"/etc/configure-nvid
 createSymlink /usr/local/sbin/configure-system "$INSTALL_DIR"/etc/configure-system.sh
 createSymlink /usr/local/sbin/configure-apt-mirror "$INSTALL_DIR"/etc/apt/configure-apt-mirror.sh
 createSymlink /usr/local/sbin/configure-grub "$INSTALL_DIR"/etc/default/configure-grub.sh
-createSymlink /usr/local/sbin/configure-firewall "$INSTALL_DIR"/etc/network/configure-firewall.sh
-createSymlink /usr/local/sbin/ip6tables-desktop "$INSTALL_DIR"/etc/network/ip6tables-desktop.sh
-createSymlink /usr/local/sbin/ipset-config "$INSTALL_DIR"/etc/network/ipset-config.sh
-createSymlink /usr/local/sbin/iptables-desktop "$INSTALL_DIR"/etc/network/iptables-desktop.sh
 createSymlink /usr/local/sbin/configure-nm "$INSTALL_DIR"/etc/NetworkManager/configure-nm.sh
+createSymlink /usr/local/sbin/configure-nftables "$INSTALL_DIR"/etc/nftables/configure-nftables.sh
+createSymlink /usr/local/sbin/nftables-private "$INSTALL_DIR"/etc/nftables/nftables-private.sh
+createSymlink /usr/local/sbin/nftables-public "$INSTALL_DIR"/etc/nftables/nftables-public.sh
 createSymlink /usr/local/sbin/configure-samba "$INSTALL_DIR"/etc/samba/configure-samba.sh
 createSymlink /usr/local/sbin/configure-security "$INSTALL_DIR"/etc/security/configure-security.sh
 createSymlink /usr/local/sbin/configure-udev "$INSTALL_DIR"/etc/udev/configure-udev.sh

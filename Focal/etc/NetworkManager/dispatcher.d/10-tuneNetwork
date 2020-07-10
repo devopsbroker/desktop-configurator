@@ -44,23 +44,24 @@ ACTION="$2"
 MAC_ADDR=""
 MD5SUM=""
 TUNER_FILE=""
+FIREWALL_FILE=""
 
 ################################### Actions ###################################
 
 if [ "$ACTION" == "up" ]; then
 	MAC_ADDR="$(/usr/sbin/arp -n -a $IP4_GATEWAY | /usr/bin/awk '{print $4}')"
 	MD5SUM="$(echo \"$MAC_ADDR\" | /usr/bin/md5sum)"
-	TUNER_FILE="20-tune-${MD5SUM:0:8}"
+	TUNER_FILE="20-tune-${IFACE}-${MD5SUM:0:8}"
 
-	# Create a subdirectory for the network interface name
-	if [ ! -d /etc/NetworkManager/dispatcher.d/$IFACE ]; then
-		/usr/bin/mkdir --mode=0755 /etc/NetworkManager/dispatcher.d/$IFACE
-		/usr/bin/chown root:root /etc/NetworkManager/dispatcher.d/$IFACE
-		/usr/bin/chmod 0755 /etc/NetworkManager/dispatcher.d/$IFACE
+	# Create a subdirectory for the network interface name for the firewall script
+	if [ ! -d /etc/nftables/$IFACE ]; then
+		/usr/bin/mkdir --mode=0755 /etc/nftables/$IFACE
+		/usr/bin/chown root:root /etc/nftables/$IFACE
+		/usr/bin/chmod 0755 /etc/nftables/$IFACE
 	fi
 
 	# Create tuning script for the given network
-	if [ ! -f /etc/NetworkManager/dispatcher.d/$IFACE/$TUNER_FILE ]; then
+	if [ ! -f /etc/NetworkManager/dispatcher.d/$TUNER_FILE ]; then
 
 		# ------------------------ Network Information ------------------------
 
@@ -70,12 +71,20 @@ if [ "$ACTION" == "up" ]; then
 		INET_UL_SPEED=$(/usr/bin/awk '/Upload:/{ print $2 }' /tmp/speedtest.info)
 
 		# Create network tuning script
-		$EXEC_NETTUNER -d $INET_DL_SPEED -u $INET_UL_SPEED -m $MAC_ADDR $IFACE > /etc/NetworkManager/dispatcher.d/$IFACE/$TUNER_FILE
-		/usr/bin/chown root:root /etc/NetworkManager/dispatcher.d/$IFACE/$TUNER_FILE
-		/usr/bin/chmod 0744 /etc/NetworkManager/dispatcher.d/$IFACE/$TUNER_FILE
+		$EXEC_NETTUNER -d $INET_DL_SPEED -u $INET_UL_SPEED -m $MAC_ADDR $IFACE > /etc/NetworkManager/dispatcher.d/$TUNER_FILE
+		/usr/bin/chown root:root /etc/NetworkManager/dispatcher.d/$TUNER_FILE
+		/usr/bin/chmod 0755 /etc/NetworkManager/dispatcher.d/$TUNER_FILE
+
+		# Create private network firewall script if not a wireless network
+		if [[ "${IFACE}" != w* ]]; then
+			FIREWALL_FILE="firewall-${MD5SUM:0:8}.nft"
+			/etc/nftables/nftables-private.sh $IFACE > /etc/nftables/$IFACE/$FIREWALL_FILE
+			/usr/bin/chown root:root /etc/nftables/$IFACE/$FIREWALL_FILE
+			/usr/bin/chmod 0755 /etc/nftables/$IFACE/$FIREWALL_FILE
+		fi
 
 		# Call new network tuning script
-		/usr/bin/bash /etc/NetworkManager/dispatcher.d/$IFACE/$TUNER_FILE $IFACE $ACTION
+		/usr/bin/bash /etc/NetworkManager/dispatcher.d/$TUNER_FILE $IFACE $ACTION
 
 		/usr/bin/rm /tmp/speedtest.info
 	fi
