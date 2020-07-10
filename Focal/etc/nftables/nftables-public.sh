@@ -166,15 +166,12 @@ define TCP_CLIENT_PORTS = {
 
 define UDP_CLIENT_PORTS = {
   53,                       # DNS
-  123,                      # NTP
-  1124,                     # WS-Discovery
-  1900,                     # UPnP
-  5353                      # mDNS
+  123                       # NTP
 }
 
-define UDP_SERVICE_PORTS = {
-  5353                      # mDNS
-}
+#define UDP_SERVICE_PORTS = {
+#
+#}
 
 #
 # IPv4 nftables Configuration
@@ -214,7 +211,7 @@ table ip ipv4-firewall {
 
   chain ${NIC}-input-udp {
 	udp sport \$UDP_CLIENT_PORTS accept
-	udp dport \$UDP_SERVICE_PORTS accept
+#	udp dport \$UDP_SERVICE_PORTS accept
 	udp sport 67 udp dport 68 accept
 	log level info prefix "[IPv4 UDP BLOCK] " reject with icmp type port-unreachable
   }
@@ -261,7 +258,7 @@ table ip ipv4-firewall {
 
   chain ${NIC}-output-udp {
 	udp dport \$UDP_CLIENT_PORTS accept
-	udp sport \$UDP_SERVICE_PORTS accept
+#	udp sport \$UDP_SERVICE_PORTS accept
 	udp sport 68 udp dport 67 accept
 	log level info prefix "[IPv4 UDP BLOCK] " reject with icmp type port-unreachable
   }
@@ -306,7 +303,7 @@ table ip6 ipv6-firewall {
 
   chain ${NIC}-input-udp {
 	udp sport \$UDP_CLIENT_PORTS accept
-	udp dport \$UDP_SERVICE_PORTS accept
+#	udp dport \$UDP_SERVICE_PORTS accept
 	udp sport 547 udp dport 546 accept
 	log level info prefix "[IPv6 UDP BLOCK] " reject with icmpv6 type port-unreachable
   }
@@ -353,7 +350,7 @@ table ip6 ipv6-firewall {
 
   chain ${NIC}-output-udp {
 	udp dport \$UDP_CLIENT_PORTS accept
-	udp sport \$UDP_SERVICE_PORTS accept
+#	udp sport \$UDP_SERVICE_PORTS accept
 	udp sport 546 udp dport 547 ip6 daddr ${DHCPv6_MULTI_ADDR} accept
 	log level info prefix "[IPv6 UDP BLOCK] " reject with icmpv6 type port-unreachable
   }
