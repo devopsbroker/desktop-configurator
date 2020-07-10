@@ -4,15 +4,15 @@ Section: utils
 Priority: optional
 Architecture: amd64
 Essential: no
-Depends: adduser, apt, bash, curl, gawk, iptables, lsb-release, parallel, snapd
+Depends: adduser, apt, bash, curl, gawk, nftables, lsb-release, parallel, snapd
 Installed-Size: 0
 Maintainer: DevOpsBroker Developers <developers@devopsbroker.org>
-Description: Configures fresh installation of Ubuntu 18.04 Desktop
+Description: Configures fresh installation of Ubuntu 20.04 Desktop
  This package provides a complete turn-key solution for configuring a fresh
- installation of Ubuntu 18.04 Desktop. Features provided by Ubuntu 18.04
+ installation of Ubuntu 20.04 Desktop. Features provided by Ubuntu 20.04
  Desktop Configurator include:
  .
- * Configures IPv4 firewall and IPv6 firewall using iptables and ip6tables
+ * Configures IPv4 firewall and IPv6 firewall using nftables
  * Installs all DevOpsBroker system administration and user utilities
  * Installs a number of useful applications, libraries and utilities
  * Installs any available proprietary drivers
@@ -22,10 +22,10 @@ Description: Configures fresh installation of Ubuntu 18.04 Desktop
  * Configures the fastest APT sources mirror
  * Configures and optimizes GRUB
  * Manages DevOpsBroker configuration files (e.g. ansi.conf)
- * Tunes the default network interface card
+ * Tunes network cards based on individual connections (i.e. Wi-Fi networks)
  * Performs Samba configuration and optimization
  * Configures systemwide security configuration
- * Configures the Disk I/O schedulers and tunes each disk independently
+ * Configures the Disk I/O schedulers
  * Configure systemd-resolved DNS servers
  * Performs user configuration
  * Complete solution for setting up a Samba server

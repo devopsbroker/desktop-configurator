@@ -1,9 +1,9 @@
 #!/usr/bin/bash
 
 #
-# 20-nf_conntrack - DevOpsBroker NetworkManager script for configuring the nf_conntrack module
+# 30-nf_conntrack - DevOpsBroker NetworkManager script for configuring the nf_conntrack module
 #
-# Copyright (C) 2018-2020 Edward Smith <edwardsmith@devopsbroker.org>
+# Copyright (C) 2020 Edward Smith <edwardsmith@devopsbroker.org>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -19,7 +19,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # -----------------------------------------------------------------------------
-# Developed on Ubuntu 16.04.4 LTS running kernel.osrelease = 4.13.0-45
+# Developed on Ubuntu 20.04 LTS running kernel.osrelease = 5.4.0-37
 #
 # This script performs the following tasks:
 #   o Configures the nf_conntrack kernel parameters
@@ -30,6 +30,7 @@
 
 set -o errexit                 # Exit if any statement returns a non-true value
 set -o nounset                 # Exit if use an uninitialised variable
+set -o pipefail                # Exit if any statement in a pipeline returns a non-true value
 
 ################################## Variables ##################################
 
@@ -46,7 +47,7 @@ NF_CONNTRACK_EXPECT_MAX=$(/usr/bin/cat /sys/module/nf_conntrack/parameters/expec
 # Configure the nf_conntrack kernel module
 #
 
-/usr/bin/logger -p syslog.notice -i [20-nf_conntrack] Setting net.netfilter.nf_conntrack kernel parameters;
+/usr/bin/logger -p syslog.notice -i [30-nf_conntrack] Setting net.netfilter.nf_conntrack kernel parameters;
 
 # Optimize generic timeout to 2 minutes
 $EXEC_SYSCTL -w net.netfilter.nf_conntrack_generic_timeout=120

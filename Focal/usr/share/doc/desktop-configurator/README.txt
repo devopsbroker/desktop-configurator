@@ -38,7 +38,7 @@ HISTORY
 
 FEATURES
 
-	* Configures IPv4 firewall and IPv6 firewall using iptables and ip6tables
+	* Configures IPv4 firewall and IPv6 firewall using nftables
 	* Installs all DevOpsBroker system administration and user utilities
 	* Installs a number of useful applications, libraries and utilities
 	* Installs any available proprietary drivers
@@ -48,12 +48,13 @@ FEATURES
 	* Configures the fastest APT sources mirror
 	* Configures and optimizes GRUB
 	* Manages DevOpsBroker configuration files (e.g. ansi.conf)
-	* Tunes the default network interface card
+	* Tunes network cards based on individual connections (i.e. Wi-Fi networks)
 	* Performs Samba configuration and optimization
 	* Configures systemwide security configuration
-	* Configures the Disk I/O schedulers and tunes each disk independently
+	* Configures the Disk I/O schedulers
 	* Configure systemd-resolved DNS servers
 	* Performs user configuration
+	* Complete solution for setting up a Samba server
 
 AUTHORS
 

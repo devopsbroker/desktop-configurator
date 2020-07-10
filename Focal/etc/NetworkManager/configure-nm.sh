@@ -24,10 +24,8 @@
 # The following configuration files are managed by this script:
 #
 # o /etc/NetworkManager/NetworkManager.conf
-# o /etc/NetworkManager/dispatcher.d/pre-up.d/10-firewall
-# o /etc/NetworkManager/dispatcher.d/pre-up.d/20-nf_conntrack
-# o /etc/NetworkManager/system-connections/$NIC
-# o /etc/NetworkManager/dispatcher.d/tune-$NIC
+# o /etc/NetworkManager/dispatcher.d/10-tuneNetwork
+# o /etc/NetworkManager/dispatcher.d/30-nf_conntrack
 #
 # Useful Linux Command-Line Utilities
 # ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
@@ -184,51 +182,18 @@ fi
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tasks ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Install /etc/NetworkManager/NetworkManager.conf
+#
+# /etc/NetworkManager Configuration
+#
+
 installConfig 'NetworkManager.conf' "$SCRIPT_DIR" /etc/NetworkManager
-
-# Retrieve the default NIC connection UUID
-CONN_UUID="$($EXEC_NMCLI --fields UUID,TYPE,DEVICE connection show | $EXEC_GREP -F $NIC | $EXEC_CUT -d ' ' -f1)"
-
-# Modify NetworkManager connection for default network interface
-printInfo "Modifying NetworkManager connection profile for '$NIC'"
-
-$EXEC_NMCLI connection modify uuid $CONN_UUID \
-	connection.autoconnect yes \
-	connection.autoconnect-priority 1
-
-$EXEC_NMCLI connection modify uuid $CONN_UUID \
-	ipv4.dhcp-send-hostname yes \
-	ipv4.dns-search "" \
-	ipv4.ignore-auto-dns yes \
-	ipv4.may-fail no \
-	ipv4.method auto \
-	ipv4.route-metric 100
-
-$EXEC_NMCLI connection modify uuid $CONN_UUID \
-	ipv6.addr-gen-mode stable-privacy \
-	ipv6.dhcp-send-hostname yes \
-	ipv6.dns-search "" \
-	ipv6.ignore-auto-dns yes \
-	ipv6.ip6-privacy 0 \
-	ipv6.may-fail yes \
-	ipv6.method auto \
-	ipv6.route-metric 100
 
 #
 # /etc/NetworkManager/dispatcher.d Configuration
 #
 
 installNMScript 'dispatcher.d/10-tuneNetwork'
-
-if [ "$INSTALL_CONFIG" == "true" ]; then
-	IP4_GATEWAY="$(/usr/sbin/ip route show 0.0.0.0/0 dev $NIC | /usr/bin/awk '{print $3}')"
-
-	/usr/bin/bash IP4_GATEWAY=$IP4_GATEWAY /etc/NetworkManager/dispatcher.d/10-tuneNetwork $NIC 'up'
-fi
-
-installNMScript 'dispatcher.d/pre-up.d/10-firewall'
-installNMScript 'dispatcher.d/pre-up.d/20-nf_conntrack'
+installNMScript 'dispatcher.d/30-nf_conntrack'
 
 printInfo "Restarting NetworkManager service"
 echo

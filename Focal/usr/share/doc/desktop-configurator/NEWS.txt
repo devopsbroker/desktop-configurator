@@ -1,6 +1,8 @@
 TBD Version 3.0.0
 
   * Configure systemd-resolved DNS servers
+  * Allow NetworkManager to tune each network individually
+  * Convert firewall over to nftables
 
 2019-07-10: Version 2.2.0
 

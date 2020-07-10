@@ -164,19 +164,20 @@ installutils: copyusr
 
 	$(call printInfo,Creating symbolic links for $(INSTALL_DIR)/etc files)
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-amdgpu.sh $(BUILD_DIR)/usr/local/sbin/configure-amdgpu
-	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/apt/configure-apt-mirror.sh $(BUILD_DIR)/usr/local/sbin/configure-apt-mirror
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-fstab.sh $(BUILD_DIR)/usr/local/sbin/configure-fstab
-	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/default/configure-grub.sh $(BUILD_DIR)/usr/local/sbin/configure-grub
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-kernel.sh $(BUILD_DIR)/usr/local/sbin/configure-kernel
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-nvidia.sh $(BUILD_DIR)/usr/local/sbin/configure-nvidia
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-system.sh $(BUILD_DIR)/usr/local/sbin/configure-system
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/apt/configure-apt-mirror.sh $(BUILD_DIR)/usr/local/sbin/configure-apt-mirror
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/default/configure-grub.sh $(BUILD_DIR)/usr/local/sbin/configure-grub
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/NetworkManager/configure-nm.sh $(BUILD_DIR)/usr/local/sbin/configure-nm
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/nftables/configure-nftables.sh $(BUILD_DIR)/usr/local/sbin/configure-nftables
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/nftables/nftables-private.sh $(BUILD_DIR)/usr/local/sbin/nftables-private
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/nftables/nftables-public.sh $(BUILD_DIR)/usr/local/sbin/nftables-public
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/samba/configure-samba.sh $(BUILD_DIR)/usr/local/sbin/configure-samba
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/security/configure-security.sh $(BUILD_DIR)/usr/local/sbin/configure-security
-	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-system.sh $(BUILD_DIR)/usr/local/sbin/configure-system
-	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/udev/configure-udev.sh $(BUILD_DIR)/usr/local/sbin/configure-udev
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/systemd/configure-resolved.sh $(BUILD_DIR)/usr/local/sbin/configure-resolved
-	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/network/ip6tables-desktop.sh $(BUILD_DIR)/usr/local/sbin/ip6tables-desktop
-	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/network/iptables-desktop.sh $(BUILD_DIR)/usr/local/sbin/iptables-desktop
-	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/udev/rules.d/tune-diskio.tpl $(BUILD_DIR)/usr/local/sbin/tune-diskio
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/udev/configure-udev.sh $(BUILD_DIR)/usr/local/sbin/configure-udev
 
 	$(call printInfo,Creating symbolic links for $(INSTALL_DIR)/home files)
 	$(EXEC_LN) -sT $(INSTALL_DIR)/home/configure-user.sh $(BUILD_DIR)/usr/local/sbin/configure-user

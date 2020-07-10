@@ -2,6 +2,8 @@ desktop-configurator (3.0.0) focal; urgency=medium
 
   [ Edward Smith ]
   * Configure systemd-resolved DNS servers
+  * Allow NetworkManager to tune each network individually
+  * Convert firewall over to nftables
 
  -- Edward Smith <edwardsmith@devopsbroker.org>  TBD
 
