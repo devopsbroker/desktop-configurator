@@ -1,43 +1,44 @@
-# DevOpsBroker Ubuntu 18.04 Desktop Configurator
+# DevOpsBroker Ubuntu 20.04 Desktop Configurator
 
-The DevOpsBroker Ubuntu 18.04 Desktop Configurator is a complete turn-key solution for configuring a fresh installation of Ubuntu 18.04 Desktop.
+The DevOpsBroker Ubuntu 20.04 Desktop Configurator is a complete turn-key solution for configuring a fresh installation of Ubuntu 20.04 Desktop.
 
 The following tasks are performed by the Configurator:
 
-- Configures IPv4 firewall and IPv6 firewall using iptables and ip6tables
+- Configures IPv4 firewall and IPv6 firewall using nftables
 - Installs all DevOpsBroker system administration and user utilities
 - Installs a number of useful applications, libraries and utilities
 - Installs any available proprietary drivers
-- Configures and optimizes the file system
+- Configures and optimizes the filesystem
 - Performs Linux kernel tuning optimizations
 - Performs general system configuration
 - Configures the fastest APT sources mirror
 - Configures and optimizes GRUB
 - Manages DevOpsBroker configuration files (e.g. ansi.conf)
-- Tunes the default network interface card
+- Tunes network cards based on individual connections (i.e. Wi-Fi networks)
 - Performs Samba configuration and optimization
 - Configures systemwide security configuration
-- Configures the Disk I/O schedulers and tunes each disk independently
+- Configures the Disk I/O schedulers
 - Configure systemd-resolved DNS servers
 - Performs user configuration
+- Complete solution for setting up a Samba server
 
-## Install Ubuntu 18.04 Desktop
+## Install Ubuntu 20.04 Desktop
 
-### Download Ubuntu 18.04 Desktop
+### Download Ubuntu 20.04 Desktop
 
-First thing to do is download and install a fresh copy of Ubuntu 18.04 Desktop. The latest ISO images can be found at:
+First thing to do is download and install a fresh copy of Ubuntu 20.04 Desktop. The latest ISO images can be found at:
 
-[Ubuntu 18.04 Bionic Beaver Downloads](http://releases.ubuntu.com/18.04/)
+[Ubuntu 20.04 Focal Fossa Downloads](https://releases.ubuntu.com/20.04/)
 
 Download the 64-bit ISO image to take full advantage of the hardware inside your PC or laptop. Save the ISO file to the Downloads directory.
 
-![Image of 64-bit ISO](ubuntu-bionic-desktop-amd64-iso.png)
+![Image of 64-bit ISO](ubuntu-focal-desktop-amd64-iso.png)
 
 ### Create Bootable USB Drive
 
 For each scenario below, you will need:
 - A 2GB or larger USB drive
-- The Ubuntu 18.04 Desktop ISO file
+- The Ubuntu 20.04 Desktop ISO file
 
 #### From Windows
 
@@ -46,26 +47,26 @@ For each scenario below, you will need:
    * Insert USB drive
    * Select USB drive in the Device field
    * Boot Selection
-     - Select the Ubuntu 18.04 Desktop ISO file
+     - Select the Ubuntu 20.04 Desktop ISO file
    * Partition Scheme
      - Select **MBR**
    * Target System
      - Select **BIOS or UEFI**
    * Click **Start**
 
-Once Rufus completes the ISO image writing process, you can now install Ubuntu 18.04 Desktop from the USB drive.
+Once Rufus completes the ISO image writing process, you can now install Ubuntu 20.04 Desktop from the USB drive.
 
 #### From Ubuntu
 
 1. Insert USB drive
 2. Launch Starup Disk Creator
    * Search for 'Startup Disk Creator' from either **Activities** or **Show Applications**
-3. Select the Ubuntu 18.04 Desktop ISO file
+3. Select the Ubuntu 20.04 Desktop ISO file
 4. Select the USB drive
 5. Click **Make Startup Disk**
 6. Confirm the USB drive chosen is correct
 
-Once Startup Disk Creator completes the ISO image writing process, you can now install Ubuntu 18.04 Desktop from the USB drive.
+Once Startup Disk Creator completes the ISO image writing process, you can now install Ubuntu 20.04 Desktop from the USB drive.
 
 ### Enable UEFI Boot in BIOS
 
@@ -106,18 +107,12 @@ The EFI booting architecture requires a specialized partition configuration in o
 
 ![Image of Create /boot Partition Table](create-boot-partition.png)
 
-6. Create a /dropbox partition (**Optional**)
-   * If you are a Dropbox user, you will need to create a separate partition for your Dropbox folder
-   * From the infinite wisdom of Dropbox: "[**On Nov. 7, 2018, we’re ending support for Dropbox syncing to drives with certain uncommon file systems.** The supported file systems are NTFS for Windows, HFS+ or APFS for Mac, and **Ext4 for Linux**](https://www.dropboxforum.com/t5/Syncing-and-uploads/Dropbox-client-warns-me-that-it-ll-stop-syncing-in-Nov-why/m-p/290065/highlight/true#M42255)"
-   * Create an unencrypted Ext4 partition mounted to the /dropbox folder sized appropriately for your specific needs
-
-
-7. Create the / partition
+6. Create the / partition
    * Use the rest of the disk for the root partition size with the XFS file system
 
 ![Image of Create Root Partition Table](create-root-partition.png)
 
-8. Write all changes to disk
+7. Write all changes to disk
    * Click on **Install Now** button and then select **Continue**
 
 ![Image of Write Changes to Disk](write-changes-to-disk.png)
