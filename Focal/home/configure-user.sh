@@ -396,13 +396,7 @@ fi
 #
 # Generate SSH Keys
 #
-
-# Clean out any errors that might have been made on install
-if [ -f "$userhome"/.ssh ]; then
-	$EXEC_RM "$userhome"/.ssh
-fi
-
-if [ ! -d "$userhome"/.ssh ] || [ $($EXEC_FIND "$userhome"/.ssh -type f | $EXEC_WC -l) -eq 0 ]; then
+if [ ! -d "$userhome"/.ssh ] || [ $($EXEC_FIND "$userhome"/.ssh -type f -name *.pub | $EXEC_WC -l) -eq 0 ]; then
 	/usr/bin/sudo -u $username $EXEC_SSH_KEY gen -d "$userhome" -u $username
 fi
 
@@ -411,26 +405,6 @@ if [ ! -f "$userhome"/.ssh/config ]; then
 
 	# Install as $username:$username with rw------- privileges
 	$EXEC_INSTALL -o $username -g $username -m 600 "$SCRIPT_DIR"/ssh/config "$userhome"/.ssh
-fi
-
-#
-# Install ssh-agent.service
-#
-
-if [ ! -f "$userhome"/.config/systemd/user/ssh-agent.service ]; then
-	printInfo 'Installing systemd user service ssh-agent.service'
-
-	# Install as $username:$username with rw-r--r-- privileges
-	$EXEC_INSTALL -o $username -g $username -m 644 "$SCRIPT_DIR"/systemd/ssh-agent.service "$userhome"/.config/systemd/user
-
-	# Need XDG_RUNTIME_DIR and DBUS_SESSION_BUS_ADDRESS
-	$EXEC_SUDO -u $username XDG_RUNTIME_DIR="$XDG_RUNTIME_DIR" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" $EXEC_SYSTEMCTL --user daemon-reload
-
-	printInfo 'Enabling systemd user service ssh-agent.service'
-	$EXEC_SUDO -u $username XDG_RUNTIME_DIR="$XDG_RUNTIME_DIR" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" $EXEC_SYSTEMCTL --user enable ssh-agent.service
-
-	printInfo 'Starting systemd user service ssh-agent.service'
-	$EXEC_SUDO -u $username XDG_RUNTIME_DIR="$XDG_RUNTIME_DIR" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" $EXEC_SYSTEMCTL --user start ssh-agent.service
 fi
 
 #

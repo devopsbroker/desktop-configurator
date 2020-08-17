@@ -197,7 +197,9 @@ createSymlink /usr/local/sbin/configure-security "$INSTALL_DIR"/etc/security/con
 createSymlink /usr/local/sbin/configure-udev "$INSTALL_DIR"/etc/udev/configure-udev.sh
 createSymlink /usr/local/sbin/tune-diskio "$INSTALL_DIR"/etc/udev/rules.d/tune-diskio.tpl
 createSymlink /usr/local/sbin/configure-resolved "$INSTALL_DIR"/etc/systemd/configure-resolved.sh
+createSymlink /usr/local/sbin/configure-cache "$INSTALL_DIR"/home/configure-cache.sh
 createSymlink /usr/local/sbin/configure-user "$INSTALL_DIR"/home/configure-user.sh
+createSymlink /usr/local/sbin/configure-ssh "$INSTALL_DIR"/home/configure-ssh.sh
 
 #
 # Install DevOpsBroker configuration files
