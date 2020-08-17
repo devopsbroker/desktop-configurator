@@ -143,7 +143,6 @@ $EXEC_CP -uv --preserve=timestamps "$SCRIPT_DIR/device-drivers.sh" "$INSTALL_DIR
 $EXEC_CP -uv --preserve=timestamps "$SCRIPT_DIR/ttf-msclearfonts.sh" "$INSTALL_DIR"
 $EXEC_CP -uv --preserve=timestamps "$SCRIPT_DIR/update-utils.sh" "$INSTALL_DIR"
 
-$EXEC_CP -ruv --preserve=timestamps "$SCRIPT_DIR/archives" "$INSTALL_DIR"
 $EXEC_CP -ruv --preserve=timestamps "$SCRIPT_DIR/doc" "$INSTALL_DIR"
 $EXEC_CP -ruv --preserve=timestamps "$SCRIPT_DIR/etc" "$INSTALL_DIR"
 $EXEC_CP -ruv --preserve=timestamps "$SCRIPT_DIR/home" "$INSTALL_DIR"
