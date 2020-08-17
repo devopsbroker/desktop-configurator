@@ -384,12 +384,6 @@ installPackage '/usr/bin/glxgears' 'mesa-utils'
 # Install mmdblookup
 installPackage '/usr/bin/mmdblookup' 'mmdb-bin libmaxminddb0'
 
-# Install GeoLite2 City geolocation database
-if [ "$PKG_INSTALLED" == 'true' ]; then
-	/usr/local/bin/geoip update
-	echo
-fi
-
 # Uninstall mtr-tiny
 uninstallPackage '/usr/share/doc/mtr-tiny/copyright' 'mtr-tiny'
 
