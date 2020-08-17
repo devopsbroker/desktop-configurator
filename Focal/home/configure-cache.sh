@@ -93,6 +93,7 @@ function createDirectory() {
 
 ## Bash exec variables
 EXEC_LSBLK=/usr/bin/lsblk
+EXEC_SYMLINK=/usr/local/bin/symlink
 
 ## Options
 username=${1:-$SUDO_USER}
@@ -115,7 +116,7 @@ if [ -z "$userRecord" ]; then
 fi
 
 # Set the user's home directory
-IFS=':'; userInfo=($userRecord); unset IFS;
+IFS=':'; userInfo=($userRecord); IFS=$'\n\t';
 userhome="${userInfo[5]}"
 
 ################################### Actions ###################################
@@ -141,7 +142,7 @@ if [ ! -d "/mnt/ramdisk/$username/mozilla/firefox" ] && [ -d "$userhome"/.cache/
 	$EXEC_SYMLINK -o $username:$username "$userhome"/.cache/mozilla/firefox "/mnt/ramdisk/$username/mozilla/firefox"
 fi
 
-blockDeviceList=$($EXEC_LSBLK -Sno NAME)
+blockDeviceList=($($EXEC_LSBLK -o NAME | $EXEC_GREP -E "^(nvme|sd)"))
 
 # Don't need to move cache directory if there is only one disk in the system
 if [ ${#blockDeviceList[@]} -eq 1 ]; then
@@ -207,7 +208,7 @@ createDirectory "$selectedPartition/cache/$username" '0700'
 
 # Move $userhome/.cache to $selectedPartition/cache/$username
 if [ -d "$selectedPartition/cache/$username" ] && [ ! -L "$userhome"/.cache ]; then
-	printInfo "Moving $userhome/.cache to /cache/$username"
+	printInfo "Moving $userhome/.cache to $selectedPartition/cache/$username/"
 
 	$EXEC_MV "$userhome"/.cache/* "$selectedPartition/cache/$username/"
 	$EXEC_RM -rf "$userhome"/.cache
