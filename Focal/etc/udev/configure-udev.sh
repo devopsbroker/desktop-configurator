@@ -98,9 +98,6 @@ if [ "$USER" != 'root' ]; then
 	exit 1
 fi
 
-# Ensure the tune-diskio.tpl script is executable
-tuneDiskIOTpl=$(isExecutable "$SCRIPT_DIR"/rules.d/tune-diskio.tpl)
-
 ################################## Variables ##################################
 
 ## Bash exec variables
