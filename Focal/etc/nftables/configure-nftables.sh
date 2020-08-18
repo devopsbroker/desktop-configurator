@@ -172,6 +172,12 @@ fi
 
 for IFACE in ${ALL_IFACES[@]}; do
 
+	if [ ! -d "/etc/nftables/$IFACE" ]; then
+		printInfo "Creating /etc/nftables/$IFACE directory"
+
+		$EXEC_MKDIR --parents --mode=0755 "/etc/nftables/$IFACE"
+	fi
+
 	# Configure the base public network firewall script
 	if [ ! -f "/etc/nftables/$IFACE/firewall-public.nft" ]; then
 		printInfo "Installing /etc/nftables/$IFACE/firewall-public.nft"
