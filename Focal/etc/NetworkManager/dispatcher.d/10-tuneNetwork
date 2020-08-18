@@ -78,7 +78,7 @@ if [ "$ACTION" == "up" ]; then
 		# Create private network firewall script if not a wireless network
 		if [[ "${IFACE}" != w* ]]; then
 			FIREWALL_FILE="firewall-${MD5SUM:0:8}.nft"
-			/etc/nftables/nftables-private.sh $IFACE > /etc/nftables/$IFACE/$FIREWALL_FILE
+			/usr/bin/sudo /etc/nftables/nftables-private.sh $IFACE | /usr/bin/sudo /usr/bin/tee /etc/nftables/$IFACE/$FIREWALL_FILE
 			/usr/bin/chown root:root /etc/nftables/$IFACE/$FIREWALL_FILE
 			/usr/bin/chmod 0755 /etc/nftables/$IFACE/$FIREWALL_FILE
 		fi
