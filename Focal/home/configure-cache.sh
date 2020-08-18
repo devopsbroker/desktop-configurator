@@ -180,13 +180,11 @@ partitionList+=('Skip')
 echo "${bold}Which partition do you want to use for the cache directory?${reset}"
 select selectedPartition in "${partitionList[@]}"; do
 	# Ensure the selection is in the partition list
-	set +o errexit
-	containsElement "$selectedPartition" "${partitionList[@]}"
+	returnValue=$(containsElement "$selectedPartition" "${partitionList[@]}")
 
-	if [ $? -eq 0 ]; then
+	if [ $returnValue == "0" ]; then
 		break;
 	fi
-	set -o errexit
 done
 
 if [ "$selectedPartition" == 'Skip' ]; then
