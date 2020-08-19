@@ -528,12 +528,6 @@ installPackage '/usr/bin/yad' 'yad'
 "$SCRIPT_DIR"/etc/default/configure-grub.sh
 
 #
-# systemd-resolved DNS Server Configuration
-#
-
-"$SCRIPT_DIR"/etc/systemd/configure-resolved.sh
-
-#
 # NetworkManager Configuration
 #
 

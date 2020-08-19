@@ -176,7 +176,6 @@ installutils: copyusr
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/nftables/nftables-public.sh $(BUILD_DIR)/usr/local/sbin/nftables-public
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/samba/configure-samba.sh $(BUILD_DIR)/usr/local/sbin/configure-samba
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/security/configure-security.sh $(BUILD_DIR)/usr/local/sbin/configure-security
-	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/systemd/configure-resolved.sh $(BUILD_DIR)/usr/local/sbin/configure-resolved
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/udev/configure-udev.sh $(BUILD_DIR)/usr/local/sbin/configure-udev
 
 	$(call printInfo,Creating symbolic links for $(INSTALL_DIR)/home files)
