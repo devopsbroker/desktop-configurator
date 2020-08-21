@@ -141,26 +141,35 @@ RAM_TOTAL=$(getRamTotal)
 # Amount of RAM available in GB
 RAM_GB=$[ ($RAM_TOTAL + 1048575) / 1048576 ]
 
-CPU_MAX_FREQ=''
-MEM_BUS_SPEED=''
+# Detect whether Ubuntu Server is running as a guest in a virtual machine
+detectVirtualization
 
-while [ -z "$CPU_MAX_FREQ" ]; do
-	read -p 'What is the CPU maximum frequency?: ' CPU_MAX_FREQ
+if [ $IS_VM_GUEST -eq 0 ]; then
 
-	if [[ ! "$CPU_MAX_FREQ" =~ ^[0-9]+$ ]]; then
-		CPU_MAX_FREQ=''
-	fi
-done
+	SCHED_TUNING="$($EXEC_SCHEDTUNER)"
 
-while [ -z "$MEM_BUS_SPEED" ]; do
-	read -p 'What is the memory bus speed?: ' MEM_BUS_SPEED
+else
+	CPU_MAX_FREQ=''
+	MEM_BUS_SPEED=''
 
-	if [[ ! "$MEM_BUS_SPEED" =~ ^[0-9]+$ ]]; then
-		MEM_BUS_SPEED=''
-	fi
-done
+	while [ -z "$CPU_MAX_FREQ" ]; do
+		read -p 'What is the CPU maximum frequency?: ' CPU_MAX_FREQ
 
-SCHED_TUNING="$($EXEC_SCHEDTUNER -f $CPU_MAX_FREQ -m $MEM_BUS_SPEED)"
+		if [[ ! "$CPU_MAX_FREQ" =~ ^[0-9]+$ ]]; then
+			CPU_MAX_FREQ=''
+		fi
+	done
+
+	while [ -z "$MEM_BUS_SPEED" ]; do
+		read -p 'What is the memory bus speed?: ' MEM_BUS_SPEED
+
+		if [[ ! "$MEM_BUS_SPEED" =~ ^[0-9]+$ ]]; then
+			MEM_BUS_SPEED=''
+		fi
+	done
+
+	SCHED_TUNING="$($EXEC_SCHEDTUNER -f $CPU_MAX_FREQ -m $MEM_BUS_SPEED)"
+fi
 
 # --------------------------- Filesystem Information --------------------------
 
