@@ -304,6 +304,7 @@ installUserUtility venture
 installUserUtility verify
 installUserUtility verifyclass
 installUserUtility verifyip
+installUserUtility view-iommu
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Venture Templates ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
