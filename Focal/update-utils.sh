@@ -278,6 +278,7 @@ installUserUtility hypotenuse
 installUserUtility kernel-config
 installUserUtility lwp
 installUserUtility macaddr
+installUserUtility md5hash
 installUserUtility md5sums
 installUserUtility nettuner
 #installUserUtility odfgrep
