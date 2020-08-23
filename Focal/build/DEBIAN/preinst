@@ -1,7 +1,7 @@
 #!/usr/bin/sh
 
 #
-# preinst - DevOpsBroker pre-installation package maintainer script for Ubuntu 18.04 Desktop
+# preinst - DevOpsBroker pre-installation package maintainer script for Ubuntu 20.04 Desktop
 #
 # Copyright (C) 2018-2020 Edward Smith <edwardsmith@devopsbroker.org>
 #
@@ -40,7 +40,7 @@ command="$1"
 oldVersion="$2"
 
 ## Variables
-currentVersion='2.2.0'
+currentVersion='3.0.0'
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ OPTION Parsing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

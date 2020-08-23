@@ -1,5 +1,5 @@
 #
-# makefile - DevOpsBroker makefile for Ubuntu 18.04 Desktop Configurator
+# makefile - DevOpsBroker makefile for Ubuntu 20.04 Desktop Configurator
 #
 # Copyright (C) 2018-2020 Edward Smith <edwardsmith@devopsbroker.org>
 #
@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # -----------------------------------------------------------------------------
-# Developed on Ubuntu 18.04.1 LTS running kernel.osrelease = 4.15.0-38
+# Developed on Ubuntu 20.04.1 LTS running kernel.osrelease = 5.4.0-42
 #
 # -----------------------------------------------------------------------------
 #

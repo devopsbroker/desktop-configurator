@@ -1,5 +1,5 @@
 
-desktop-configurator - A complete turn-key solution for configuring a fresh installation of Ubuntu 18.04 Desktop
+desktop-configurator - A complete turn-key solution for configuring a fresh installation of Ubuntu 20.04 Desktop
 
 HISTORY
 
@@ -14,20 +14,20 @@ HISTORY
 
 	Instead of creating yet another guide/FAQ/Q&A site that will eventually
 	become outdated, the Ubuntu Desktop Configurator was created instead. It is
-	specifically designed to bring a fresh installation of Ubuntu 18.04 Desktop
+	specifically designed to bring a fresh installation of Ubuntu 20.04 Desktop
 	up and running at its full potential given the hardware environment of the
 	end user.
 
 	Well over a thousand hours have been put into making the Ubuntu Desktop
 	Configurator a reality. Countless sites have been poured over to curate the
-	best possible automated solution given the baseline that the Ubuntu 18.04
+	best possible automated solution given the baseline that the Ubuntu 20.04
 	LTS release provides. A baseline that is guaranteed to be supported by
-	Canonical until April 2023.
+	Canonical until April 2025.
 
 	The ultimate goal is for end users to enjoy their Ubuntu Desktop experience
 	with the absolute minimum amount of time necessary to configure it. It
 	should take less than an hour to go from downloading the latest ISO found
-	on http://releases.ubuntu.com/18.04/, installing it, and configuring with
+	on http://releases.ubuntu.com/20.04/, installing it, and configuring with
 	Ubuntu Desktop Configurator.
 
 	There is plenty of room for additional configurations and customizations once
@@ -52,7 +52,6 @@ FEATURES
 	* Performs Samba configuration and optimization
 	* Configures systemwide security configuration
 	* Configures the Disk I/O schedulers
-	* Configure systemd-resolved DNS servers
 	* Performs user configuration
 	* Complete solution for setting up a Samba server
 

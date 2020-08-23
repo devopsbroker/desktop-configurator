@@ -1,5 +1,5 @@
 #
-# release.mk - DevOpsBroker makefile for creating a .deb package of Ubuntu 18.04 Desktop Configurator
+# release.mk - DevOpsBroker makefile for creating a .deb package of Ubuntu 20.04 Desktop Configurator
 #
 # Copyright (C) 2018-2020 Edward Smith <edwardsmith@devopsbroker.org>
 #
@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # -----------------------------------------------------------------------------
-# Developed on Ubuntu 18.04.1 LTS running kernel.osrelease = 4.15.0-38
+# Developed on Ubuntu 20.04.1 LTS running kernel.osrelease = 5.4.0-42
 #
 # -----------------------------------------------------------------------------
 #
@@ -29,7 +29,7 @@ include /etc/devops/globals.mk
 ################################## Variables ##################################
 
 PKG_NAME := desktop-configurator
-VERSION := 2.2.0
+VERSION := 3.0.0
 ARCH := amd64
 PKG_ARCHIVE := $(PKG_NAME)_$(VERSION)_$(ARCH)
 
@@ -76,10 +76,6 @@ createdirs: clean
 	$(call printInfo,Creating $(BUILD_DIR)/DEBIAN directory)
 	$(EXEC_MKDIR) -p --mode=0755 $(BUILD_DIR)/DEBIAN
 
-	$(call printInfo,Creating /cache directory)
-	$(EXEC_MKDIR) -p --mode=0755 $(BUILD_DIR)/cache
-	$(EXEC_CHOWN) root:users $(BUILD_DIR)/cache
-
 	$(call printInfo,Creating /etc directory)
 	$(EXEC_MKDIR) -p --mode=0755 $(BUILD_DIR)/etc
 
@@ -88,9 +84,6 @@ createdirs: clean
 
 	$(call printInfo,Creating $(INSTALL_DIR) directory)
 	$(EXEC_MKDIR) -p $(BUILD_DIR)/$(INSTALL_DIR)
-
-	$(call printInfo,Creating $(INSTALL_DIR)/archives directory)
-	$(EXEC_MKDIR) -p $(BUILD_DIR)/$(INSTALL_DIR)/archives
 
 	$(call printInfo,Setting directory permissions to 2750 and ownership to root:devops)
 	$(EXEC_CHMOD) -R 2750 $(BUILD_DIR)/opt/devopsbroker
@@ -107,9 +100,6 @@ copybase: createdirs
 
 	$(call printInfo,Copying ttf-msclearfonts.sh to $(INSTALL_DIR))
 	$(EXEC_CP) $(APPLICATION_DIR)/ttf-msclearfonts.sh $(BUILD_DIR)/$(INSTALL_DIR)
-
-	$(call printInfo,Copying archives/tidy-5.6.0-64bit.deb to $(INSTALL_DIR)/archives)
-	$(EXEC_CP) $(APPLICATION_DIR)/archives/tidy-5.6.0-64bit.deb $(BUILD_DIR)/$(INSTALL_DIR)/archives
 
 copyetc: createdirs
 	$(call printInfo,Copying etc/ files to $(INSTALL_DIR)/etc)
@@ -158,28 +148,26 @@ installutils: copyusr
 	$(EXEC_LN) -sT /usr/local/bin/convert-temp $(BUILD_DIR)/usr/local/bin/kelvin
 
 	$(call printInfo,Creating symbolic links for $(INSTALL_DIR) files)
-	$(EXEC_LN) -sT $(INSTALL_DIR)/configure-desktop.sh $(BUILD_DIR)/usr/local/sbin/configure-desktop
-	$(EXEC_LN) -sT $(INSTALL_DIR)/device-drivers.sh $(BUILD_DIR)/usr/local/sbin/device-drivers
-	$(EXEC_LN) -sT $(INSTALL_DIR)/ttf-msclearfonts.sh $(BUILD_DIR)/usr/local/sbin/ttf-msclearfonts
-
-	$(call printInfo,Creating symbolic links for $(INSTALL_DIR)/etc files)
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-amdgpu.sh $(BUILD_DIR)/usr/local/sbin/configure-amdgpu
-	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-fstab.sh $(BUILD_DIR)/usr/local/sbin/configure-fstab
-	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-kernel.sh $(BUILD_DIR)/usr/local/sbin/configure-kernel
-	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-nvidia.sh $(BUILD_DIR)/usr/local/sbin/configure-nvidia
-	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-system.sh $(BUILD_DIR)/usr/local/sbin/configure-system
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/apt/configure-apt-mirror.sh $(BUILD_DIR)/usr/local/sbin/configure-apt-mirror
+	$(EXEC_LN) -sT $(INSTALL_DIR)/home/configure-cache.sh $(BUILD_DIR)/usr/local/sbin/configure-cache
+	$(EXEC_LN) -sT $(INSTALL_DIR)/configure-desktop.sh $(BUILD_DIR)/usr/local/sbin/configure-desktop
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-fstab.sh $(BUILD_DIR)/usr/local/sbin/configure-fstab
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/default/configure-grub.sh $(BUILD_DIR)/usr/local/sbin/configure-grub
-	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/NetworkManager/configure-nm.sh $(BUILD_DIR)/usr/local/sbin/configure-nm
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-kernel.sh $(BUILD_DIR)/usr/local/sbin/configure-kernel
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/nftables/configure-nftables.sh $(BUILD_DIR)/usr/local/sbin/configure-nftables
-	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/nftables/nftables-private.sh $(BUILD_DIR)/usr/local/sbin/nftables-private
-	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/nftables/nftables-public.sh $(BUILD_DIR)/usr/local/sbin/nftables-public
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/NetworkManager/configure-nm.sh $(BUILD_DIR)/usr/local/sbin/configure-nm
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-nvidia.sh $(BUILD_DIR)/usr/local/sbin/configure-nvidia
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/samba/configure-samba.sh $(BUILD_DIR)/usr/local/sbin/configure-samba
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/security/configure-security.sh $(BUILD_DIR)/usr/local/sbin/configure-security
+	$(EXEC_LN) -sT $(INSTALL_DIR)/home/configure-ssh.sh $(BUILD_DIR)/usr/local/sbin/configure-ssh
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/configure-system.sh $(BUILD_DIR)/usr/local/sbin/configure-system
 	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/udev/configure-udev.sh $(BUILD_DIR)/usr/local/sbin/configure-udev
-
-	$(call printInfo,Creating symbolic links for $(INSTALL_DIR)/home files)
 	$(EXEC_LN) -sT $(INSTALL_DIR)/home/configure-user.sh $(BUILD_DIR)/usr/local/sbin/configure-user
+	$(EXEC_LN) -sT $(INSTALL_DIR)/device-drivers.sh $(BUILD_DIR)/usr/local/sbin/device-drivers
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/nftables/nftables-private.sh $(BUILD_DIR)/usr/local/sbin/nftables-private
+	$(EXEC_LN) -sT $(INSTALL_DIR)/etc/nftables/nftables-public.sh $(BUILD_DIR)/usr/local/sbin/nftables-public
+	$(EXEC_LN) -sT $(INSTALL_DIR)/ttf-msclearfonts.sh $(BUILD_DIR)/usr/local/sbin/ttf-msclearfonts
 
 applysecurity: copyfiles configdocs installutils
 	echo

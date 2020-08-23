@@ -1,6 +1,6 @@
-TBD Version 3.0.0
+2020-08-23 Version 3.0.0
 
-  * Configure systemd-resolved DNS servers
+  * Update desktop-configurator for Ubuntu 20.04 Desktop
   * Allow NetworkManager to tune each network individually
   * Convert firewall over to nftables
 

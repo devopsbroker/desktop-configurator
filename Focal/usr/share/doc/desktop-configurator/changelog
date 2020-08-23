@@ -1,11 +1,11 @@
 desktop-configurator (3.0.0) focal; urgency=medium
 
   [ Edward Smith ]
-  * Configure systemd-resolved DNS servers
+  * Update desktop-configurator for Ubuntu 20.04 Desktop
   * Allow NetworkManager to tune each network individually
   * Convert firewall over to nftables
 
- -- Edward Smith <edwardsmith@devopsbroker.org>  TBD
+ -- Edward Smith <edwardsmith@devopsbroker.org>  Sun, 23 Aug 2020 09:57:29 -0500
 
 desktop-configurator (2.2.0) bionic; urgency=medium
 

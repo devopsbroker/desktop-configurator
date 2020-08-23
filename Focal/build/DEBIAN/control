@@ -26,7 +26,6 @@ Description: Configures fresh installation of Ubuntu 20.04 Desktop
  * Performs Samba configuration and optimization
  * Configures systemwide security configuration
  * Configures the Disk I/O schedulers
- * Configure systemd-resolved DNS servers
  * Performs user configuration
  * Complete solution for setting up a Samba server
 Homepage: https://www.devopsbroker.org/ubuntu/desktop-configurator/
